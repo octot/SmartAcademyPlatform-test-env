@@ -5,7 +5,7 @@ import com.authentication.Authenitication.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.exception.ErrorProperties;
 import com.authentication.Authenitication.controller.AuthController;
 import com.authentication.Authenitication.security.JwtUtil;
-import com.authentication.Authenitication.service.CustomUserDetailsService;
+import com.authentication.Authenitication.service.SecurityUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class AuthControllerTest {
     @MockBean
     private JwtUtil jwtService;
     @MockBean
-    private CustomUserDetailsService customUserDetailsService;
+    private SecurityUserDetailsService customUserDetailsService;
     @MockBean
     private ErrorProperties errorProperties;
 

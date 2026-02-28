@@ -44,11 +44,23 @@
     "status": 400
   },
   "AUTH_012": {
-    "message": "OTP email sending failed:",
+    "message": "Invalid OTP please try again:",
     "status": 400
   },
   "AUTH_013": {
     "message": "OTP not Found:",
+    "status": 400
+  },
+  "AUTH_014": {
+    "message": "Otp Limit Exceeded:",
+    "status": 400
+  },
+  "AUTH_015": {
+    "message": "Auth  Resend Cooldown:",
+    "status": 400
+  },
+  "AUTH_016": {
+    "message": "To Many requests in 10 mins:",
     "status": 400
   },
   "VAL_001": {
@@ -67,6 +79,14 @@
     "message": "Invalid username format",
     "status": 400
   },
+  "VAL_005": {
+    "message": "Email same as current",
+    "status": 400
+  },
+  "VAL_006": {
+    "message": "Email already exists",
+    "status": 400
+  },
   "GEN_001": {
     "message": "Unexpected internal error",
     "status": 500
@@ -78,5 +98,13 @@
   "ROLE_002": {
     "message": "ROLE_ADMIN_NOT_FOUND",
     "status": 500
+  },
+  "EMAIL_001": {
+    "message": "REQUEST_NOT_FOUND",
+    "status": 400
+  },
+  "EMAIL_002": {
+    "message": "REQUEST_EXPIRED",
+    "status": 400
   }
 }

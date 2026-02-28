@@ -4,10 +4,12 @@ import com.authentication.Authenitication.dto.ChangePasswordRequest;
 import com.authentication.Authenitication.dto.LoginRequest;
 import com.authentication.Authenitication.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.security.CustomUserDetails;
-import com.authentication.Authenitication.verification.otp.ResendOtpRequestDTO;
 import com.authentication.Authenitication.security.JwtUtil;
-import com.authentication.Authenitication.service.CustomUserDetailsService;
-import com.authentication.Authenitication.verification.otp.OtpService;
+import com.authentication.Authenitication.service.AuthService;
+import com.authentication.Authenitication.service.PasswordService;
+import com.authentication.Authenitication.service.SecurityUserDetailsService;
+import com.authentication.Authenitication.service.UserService;
+import com.authentication.Authenitication.verification.otp.ResendOtpRequestDTO;
 import com.authentication.Authenitication.verification.otp.VerifyOtpRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +26,18 @@ import java.util.Map;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtService;
-    private final CustomUserDetailsService customUserDetailsService;
-    private final OtpService otpService;
+    private final SecurityUserDetailsService customUserDetailsService;
+    private final AuthService authService;
+    private final UserService userService;
+    private final PasswordService passwordService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtService, CustomUserDetailsService customUserDetailsService, OtpService otpService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtService, SecurityUserDetailsService customUserDetailsService, AuthService authService, UserService userService, PasswordService passwordService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.customUserDetailsService = customUserDetailsService;
-        this.otpService = otpService;
+        this.authService = authService;
+        this.userService = userService;
+        this.passwordService = passwordService;
     }
 
     @PostMapping("/login")
@@ -46,15 +52,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO request) {
-        customUserDetailsService.existsByUsername(request.getUsername());
-        customUserDetailsService.register(request);
+        userService.existsByUsername(request.getUsername());
+        authService.register(request);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request,
                                             Authentication authentication) {
-        customUserDetailsService.changePassword(request, authentication.getName());
+        passwordService.changePassword(request, authentication.getName());
         return ResponseEntity.ok("Password changed successfully");
     }
 
@@ -62,15 +68,15 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-admin")
     public ResponseEntity<String> registerAdmin(@RequestBody RegisterRequestDTO request) {
-        customUserDetailsService.existsByUsername(request.getUsername());
-        customUserDetailsService.registerForAdmin(request);
+        userService.existsByUsername(request.getUsername());
+        authService.registerForAdmin(request);
         return ResponseEntity.ok("User registered successFully");
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(
             @RequestBody VerifyOtpRequestDTO request) {
-        otpService.verifyEmailOtp(request);
+        authService.verifyEmailOtp(request);
         return ResponseEntity.ok(
                 Map.of("message", "Email verified successfully. You can now login.")
         );
@@ -78,7 +84,7 @@ public class AuthController {
 
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequestDTO request) {
-        String otp = otpService.resendEmailOtp(request.getEmail());
+        String otp = authService.resendEmailOtp(request.getEmail());
         return ResponseEntity.ok(Map.of("OtpSuccess", otp));
     }
 

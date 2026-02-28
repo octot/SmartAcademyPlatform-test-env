@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Repository
@@ -24,8 +25,6 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
     );
 
 
-    void deleteByUser_IdAndPurpose(Long userId, OtpPurpose purpose);
-
     //To avoid old otps invalidate old unused ones before creating new ones
     @Modifying  //Required for update and delete queries
     @Query("""
@@ -35,7 +34,26 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
               AND o.purpose = :purpose
               AND o.isUsed = false
             """)
-    void invalidateOldOtps(Long userId, OtpPurpose otpPurpose);
+    void invalidateActiveOtp(@Param("userId") Long userId, @Param("purpose") OtpPurpose otpPurpose);
+
+
+    @Query("""
+       SELECT COUNT(o)
+       FROM Otp o
+       WHERE o.user.id = :userId
+         AND o.purpose = :purpose
+         AND o.createdAt > :time
+       """)
+    long countRecentOtps(
+            Long userId,
+            OtpPurpose purpose,
+            Instant time
+    );
+    Optional<Otp> findTopByUserIdAndPurposeOrderByCreatedAtDesc(
+            Long userId,
+            OtpPurpose purpose
+    );
+
 
 
 }

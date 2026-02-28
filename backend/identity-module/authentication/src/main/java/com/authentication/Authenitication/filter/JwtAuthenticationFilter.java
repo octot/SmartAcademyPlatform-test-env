@@ -3,7 +3,8 @@ package com.authentication.Authenitication.filter;
 
 import com.authentication.Authenitication.entity.AppUser;
 import com.authentication.Authenitication.security.JwtUtil;
-import com.authentication.Authenitication.service.CustomUserDetailsService;
+import com.authentication.Authenitication.service.SecurityUserDetailsService;
+import com.authentication.Authenitication.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,14 +23,15 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailsService;
-
+    private final SecurityUserDetailsService userDetailsService;
+    private final UserService userService;
 
     public JwtAuthenticationFilter(
             JwtUtil jwtUtil,
-            CustomUserDetailsService userDetailsService) {
+            SecurityUserDetailsService userDetailsService, UserService userService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 Integer jwtVersion = jwtUtil.extractTokenVersion(token);
                 // 3️⃣ Load user from DB
-                AppUser user = userDetailsService.findByUsername(username);
+                AppUser user = userService.findByUsername(username);
                 // 4️⃣ Application-level check
                 if (jwtVersion.equals(user.getTokenVersion())) {
                     UsernamePasswordAuthenticationToken

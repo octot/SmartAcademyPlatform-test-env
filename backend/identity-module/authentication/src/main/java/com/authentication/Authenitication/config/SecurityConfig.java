@@ -39,7 +39,6 @@ public class SecurityConfig {
                                 "/error",
                                 "/auth/resend-otp",
                                 "/dev/email"
-
                         ).permitAll()
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().denyAll()

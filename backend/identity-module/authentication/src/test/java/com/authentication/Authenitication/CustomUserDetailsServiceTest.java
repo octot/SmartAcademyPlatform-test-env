@@ -5,7 +5,8 @@ import com.authentication.Authenitication.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.entity.RoleEntity;
 import com.authentication.Authenitication.exception.AppException;
 import com.authentication.Authenitication.repository.UserRepository;
-import com.authentication.Authenitication.service.CustomUserDetailsService;
+import com.authentication.Authenitication.service.AuthService;
+import com.authentication.Authenitication.service.SecurityUserDetailsService;
 import com.authentication.Authenitication.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ public class CustomUserDetailsServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private CustomUserDetailsService customUserDetailsService;
+    private SecurityUserDetailsService customUserDetailsService;
 
     @Mock
     private RoleService roleService;
@@ -33,6 +34,8 @@ public class CustomUserDetailsServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+   @Mock
+   private AuthService authService;
 
     //user already exist
     @Test
@@ -47,7 +50,7 @@ public class CustomUserDetailsServiceTest {
         // Act + Assert
         AppException exception = assertThrows(
                 AppException.class,
-                () -> customUserDetailsService.register(request)
+                () -> authService.register(request)
         );
 
         assertEquals("AUTH_006", exception.getErrorCode());
@@ -67,7 +70,7 @@ public class CustomUserDetailsServiceTest {
         when(passwordEncoder.encode(any()))
                 .thenReturn("encodedPassword");
 
-        customUserDetailsService.register(request);
+        authService.register(request);
         verify(userRepository).save(any());
 
     }
@@ -94,7 +97,7 @@ public class CustomUserDetailsServiceTest {
                 .thenReturn("encodedPassword");
 
         //Act
-        customUserDetailsService.register(request);
+        authService.register(request);
 
         // Assert
         verify(passwordEncoder).encode("plainPassword");
@@ -121,7 +124,7 @@ public class CustomUserDetailsServiceTest {
                 .thenReturn("encodedPass");
 
         // Act
-        customUserDetailsService.register(request);
+        authService.register(request);
 
         // Assert
         verify(userRepository, times(1)).save(any(AppUser.class));

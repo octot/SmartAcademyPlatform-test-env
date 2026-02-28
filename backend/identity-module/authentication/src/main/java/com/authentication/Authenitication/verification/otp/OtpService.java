@@ -1,94 +1,98 @@
 package com.authentication.Authenitication.verification.otp;
 
-
 import com.authentication.Authenitication.entity.AppUser;
-import com.authentication.Authenitication.enums.UserStatus;
 import com.authentication.Authenitication.exception.AppException;
-import com.authentication.Authenitication.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+
 @Service
+@Transactional
 public class OtpService {
-    private final UserRepository userRepository;
-    private final OtpDeliveryService otpDeliveryService;
     private final OtpRepository otpRepository;
 
-    public OtpService(UserRepository userRepository,
-                      OtpDeliveryService otpDeliveryService, OtpRepository otpRepository) {
-        this.userRepository = userRepository;
-        this.otpDeliveryService = otpDeliveryService;
+    public OtpService(
+                      OtpRepository otpRepository) {
         this.otpRepository = otpRepository;
     }
+    public Otp generateOtp(AppUser user, OtpPurpose purpose) {
 
+        otpRepository.invalidateActiveOtp(user.getId(), purpose);
 
-    public void verifyEmailOtp(VerifyOtpRequestDTO request) {
+        String otpValue = OtpUtil.generateOtp();
 
-        AppUser user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new AppException("AUTH_011"));
-        // 1. Already verified?
-        if (user.isEmailVerified()) {
-            throw new AppException("AUTH_007");
-        }
+        Otp otp = new Otp();
+        otp.setUser(user);
+        otp.setPurpose(purpose);
+        otp.setOtpValue(otpValue);
+        otp.setCreatedAt(Instant.now());
+        otp.setExpiryTime(
+                Instant.now().plus(purpose.getExpiryMinutes(), ChronoUnit.MINUTES)
+        );
+        otp.setAttemptCount(0);
+        otp.setMaxAttempts(purpose.getMaxAttempts());
+        otp.setUsed(false);
 
-        Otp otp = otpRepository.findActiveOtp(user.getId(), OtpPurpose.SIGNUP)
+        return otpRepository.save(otp);
+    }
+    @Transactional(noRollbackFor = AppException.class)
+    public void verifyOtp(AppUser user, OtpPurpose purpose, String inputOtp) {
+
+        Otp otp = otpRepository.findActiveOtp(user.getId(), purpose)
                 .orElseThrow(() -> new AppException("AUTH_013"));
 
-        // 3️⃣ Check expiry
         if (otp.getExpiryTime().isBefore(Instant.now())) {
-            throw new AppException("AUTH_010"); // OTP expired
+            throw new AppException("AUTH_010");
         }
-        // 4️⃣ Check attempt limit
+
         if (otp.getAttemptCount() >= otp.getMaxAttempts()) {
-            throw new AppException("AUTH_013"); // Max attempts exceeded
+            throw new AppException("AUTH_014");
+        }
+
+        otp.setAttemptCount(otp.getAttemptCount() + 1);
+
+        if (!otp.getOtpValue().equals(inputOtp)) {
+            otpRepository.save(otp);
+            throw new AppException("AUTH_012"); // Invalid OTP
         }
 
         otp.setUsed(true);
         otpRepository.save(otp);
-        // 4. SUCCESS → activate user
-        user.setEmailVerified(true);
-        user.setStatus(UserStatus.ACTIVE);
-        userRepository.save(user);
-
     }
+
 
     @Transactional
-    public String resendEmailOtp(String email) {
-        AppUser user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new AppException("AUTH_011"));
+    public void otpResentLimitCheck(AppUser user, OtpPurpose purpose){
+        Instant now = Instant.now();
 
-        if (user.isEmailVerified()) {
-            throw new AppException("AUTH_008");
+        Otp latestOtp=otpRepository
+                .findTopByUserIdAndPurposeOrderByCreatedAtDesc(user.getId(),purpose).
+                orElse(null);
+
+        if (latestOtp != null &&
+                latestOtp.getCreatedAt().isAfter(now.minusSeconds(60))) {
+            throw new AppException("AUTH_015");
         }
-        // 2️⃣ Delete previous unused SIGNUP OTP
-        otpRepository.deleteByUser_IdAndPurpose(user.getId(), OtpPurpose.SIGNUP);
-        String newOtp = OtpUtil.generateOtp();
 
-        Otp otp = new Otp();
-        otp.setUser(user);
-        otp.setPurpose(OtpPurpose.SIGNUP);
-        otp.setOtpValue(newOtp);
-        otp.setCreatedAt(Instant.now());
-        otp.setExpiryTime(
-                Instant.now().plus(OtpPurpose.SIGNUP.getExpiryMinutes(), ChronoUnit.MINUTES)
-        );
-        otp.setAttemptCount(0);
-        otp.setMaxAttempts(OtpPurpose.SIGNUP.getMaxAttempts());
-        otp.setUsed(false);
-        otpRepository.save(otp);
-        // 4️⃣ Send OTP
-        otpDeliveryService.sendOtp(
-                user.getEmail(),
-                newOtp,
-                OtpPurpose.SIGNUP.getExpiryMinutes()
-        );
+        long last10MinCount = otpRepository
+                .countRecentOtps(
+                        user.getId(),
+                        purpose,
+                        now.minus(10, ChronoUnit.MINUTES)
+                );
 
-        return newOtp;
+        if (last10MinCount >= 3) {
+            throw new AppException("AUTH_016");
+        }
+
+        if (latestOtp != null && !latestOtp.isUsed()) {
+            latestOtp.setUsed(true);
+            otpRepository.save(latestOtp);
+        }
+
     }
+
 
 }
