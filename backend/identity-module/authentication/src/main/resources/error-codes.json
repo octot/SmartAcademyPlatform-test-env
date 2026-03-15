@@ -99,6 +99,10 @@
     "message": "ROLE_ADMIN_NOT_FOUND",
     "status": 500
   },
+  "PERMISSION_001": {
+    "message": "PERMISSIONS_NOT_FOUND",
+    "status": 500
+  },
   "EMAIL_001": {
     "message": "REQUEST_NOT_FOUND",
     "status": 400

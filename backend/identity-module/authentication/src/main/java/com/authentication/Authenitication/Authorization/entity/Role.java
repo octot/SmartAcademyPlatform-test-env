@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "roles")
 @Getter
@@ -19,5 +21,20 @@ public class Role {
 
     @Column(unique = true, nullable = false)
     private String name;
+    @Column(nullable = false)
+    private Integer level;
+
+    @Column(nullable = false, length = 255)
+    private String description;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    private Long createdBy;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }
