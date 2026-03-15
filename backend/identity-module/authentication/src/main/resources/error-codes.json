@@ -92,7 +92,7 @@
     "status": 500
   },
   "ROLE_001": {
-    "message": "ROLE_USER_NOT_FOUND",
+    "message": "ACCESS_DENIED",
     "status": 500
   },
   "ROLE_002": {

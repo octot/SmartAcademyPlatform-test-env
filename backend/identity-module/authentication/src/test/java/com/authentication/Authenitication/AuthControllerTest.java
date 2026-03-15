@@ -1,11 +1,11 @@
 package com.authentication.Authenitication;
 
 
-import com.authentication.Authenitication.dto.RegisterRequestDTO;
-import com.authentication.Authenitication.exception.ErrorProperties;
-import com.authentication.Authenitication.controller.AuthController;
-import com.authentication.Authenitication.security.JwtUtil;
-import com.authentication.Authenitication.service.SecurityUserDetailsService;
+import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.exception.ErrorProperties;
+import com.authentication.Authenitication.AuthenticationModule.controller.AuthController;
+import com.authentication.Authenitication.AuthenticationModule.security.JwtUtil;
+import com.authentication.Authenitication.AuthenticationModule.service.SecurityUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

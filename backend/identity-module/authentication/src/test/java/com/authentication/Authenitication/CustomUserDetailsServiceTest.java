@@ -1,13 +1,13 @@
 package com.authentication.Authenitication;
 
-import com.authentication.Authenitication.entity.AppUser;
-import com.authentication.Authenitication.dto.RegisterRequestDTO;
-import com.authentication.Authenitication.entity.RoleEntity;
-import com.authentication.Authenitication.exception.AppException;
-import com.authentication.Authenitication.repository.UserRepository;
-import com.authentication.Authenitication.service.AuthService;
-import com.authentication.Authenitication.service.SecurityUserDetailsService;
-import com.authentication.Authenitication.service.RoleService;
+import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
+import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
+import com.authentication.Authenitication.Authorization.entity.Role;
+import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
+import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
+import com.authentication.Authenitication.AuthenticationModule.service.SecurityUserDetailsService;
+import com.authentication.Authenitication.AuthenticationModule.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -65,7 +65,7 @@ public class CustomUserDetailsServiceTest {
         when(userRepository.existsByUsername("john"))
                 .thenReturn(false);
         when(roleService.getDefaultUserRole())
-                .thenReturn(new RoleEntity(1L, "USER"));
+                .thenReturn(new Role(1L, "USER"));
 
         when(passwordEncoder.encode(any()))
                 .thenReturn("encodedPassword");
@@ -91,7 +91,7 @@ public class CustomUserDetailsServiceTest {
                 .thenReturn(false);
 
         when(roleService.getDefaultUserRole())
-                .thenReturn(new RoleEntity(1L, "USER"));
+                .thenReturn(new Role(1L, "USER"));
 
         when(passwordEncoder.encode("plainPassword"))
                 .thenReturn("encodedPassword");
@@ -118,7 +118,7 @@ public class CustomUserDetailsServiceTest {
                 .thenReturn(false);
 
         when(roleService.getDefaultUserRole())
-                .thenReturn(new RoleEntity(1L, "USER"));
+                .thenReturn(new Role(1L, "USER"));
 
         when(passwordEncoder.encode(any()))
                 .thenReturn("encodedPass");
