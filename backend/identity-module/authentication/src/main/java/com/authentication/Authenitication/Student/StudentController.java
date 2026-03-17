@@ -21,7 +21,6 @@ public class StudentController {
     @GetMapping
     public String getStudents(@AuthenticationPrincipal CustomUserDetails user) {
         System.out.println(user);
-
         Long userId = user.getUser().getId();
         return studentService.getStudents(userId);
     }

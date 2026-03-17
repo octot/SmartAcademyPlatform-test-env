@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
 @Entity
 @Table(
         name = "permissions",
@@ -65,6 +64,4 @@ public class Permission {
         }
         return resource.name() + "_" + action.name() + "_" + scope.name();
     }
-
-
 }

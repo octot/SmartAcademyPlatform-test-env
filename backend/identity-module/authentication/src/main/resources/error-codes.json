@@ -110,5 +110,20 @@
   "EMAIL_002": {
     "message": "REQUEST_EXPIRED",
     "status": 400
-  }
+  },
+  "AUTH_VALIDATOR_NOT_FOUND": {
+    "message": "No boundary validator configured for this resource.",
+    "status": 500
+  },
+  "AUTH_403": {
+    "message": "Permission Denied",
+    "status": 403
+  },
+  "AUTH_INVALID_PERMISSION": {
+    "message": "Permission invalid",
+    "status": 403
+  },
+  "RESOURCE_REQUIRED":
+  {  "message": "ResourceId required for scoped permission",
+    "status": 500}
 }

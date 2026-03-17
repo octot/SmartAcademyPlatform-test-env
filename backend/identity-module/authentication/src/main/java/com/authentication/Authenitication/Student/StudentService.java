@@ -12,10 +12,10 @@ public class StudentService {
 
     private final AuthorizationService authorizationService ;
 
+
     public String  getStudents(Long userId) {
-        authorizationService.authorize(userId, "student:view");
+        authorizationService.authorize("student:view");
         return "List of Studetnts";
     }
-
 
 }
