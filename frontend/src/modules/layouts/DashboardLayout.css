@@ -1,0 +1,26 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* SIDEBAR SPACE */
+.dashboard-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TOPBAR */
+.dashboard-main>.topbar {
+    height: 60px;
+
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 20px;
+    background: #f5f6fa;
+    overflow-y: auto;
+
+}
