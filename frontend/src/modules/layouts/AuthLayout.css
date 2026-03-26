@@ -1,0 +1,46 @@
+.auth-container {
+    display: flex;
+    height: 100vh;
+}
+
+.auth-left {
+    width: 50%;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.auth-buttons {
+    margin-top: 20px;
+}
+
+.btn-outline {
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.btn-filled {
+    background: white;
+    color: #2a5298;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+}
+
+.auth-right {
+    width: 50%;
+    background: #f5f6fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
