@@ -22,3 +22,13 @@ export const login = async (data) => {
         }, 800);
     });
 };
+
+export const register = async (data) => {
+    console.log("Registered user: ", data)
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ message: "User registered successfully" });
+        }, 800);
+    })
+
+} 

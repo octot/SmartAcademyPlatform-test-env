@@ -38,13 +38,18 @@ export default function LoginForm() {
                 </button>
             </form>
             <div className="login-options">
-                <label>
+                <button onClick={() => navigate("/register")}>
+                    Create an account
+                </button>
+                {/* <label>
                     <input type="checkbox" />
                     Remember me
-                </label>
+                </label> */}
                 <span className="forgot-link">Forgot Password?</span>
             </div>
-        </div>)
+        </div>
+
+    )
 
 }
 

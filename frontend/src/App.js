@@ -9,6 +9,7 @@ import StudentsPage from "./modules/dashboard/pages/StudentsPage"
 import DashboardLayout from "./modules/layouts/DashboardLayout"
 import PERMISSIONS from "./modules/shared/constants/permissions"
 import UnauthorizedPage from "./modules/shared/pages/UnauthorizedPage";
+import RegisterPage from "./modules/auth/pages/RegisterPage";
 function App() {
   return (
     <BrowserRouter>
@@ -18,6 +19,11 @@ function App() {
 
         {/* AUTH ROUTES */}
         <Route path="/login" element={<LoginPage />} />
+
+
+        {/* Register Page */}
+
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* DASHBOARD */}
         <Route path="/dashboard" element={<ProtectedRoute>
