@@ -10,6 +10,8 @@ import DashboardLayout from "./modules/layouts/DashboardLayout"
 import PERMISSIONS from "./modules/shared/constants/permissions"
 import UnauthorizedPage from "./modules/shared/pages/UnauthorizedPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
+import ForgotPasswordPage from "./modules/auth/pages/ForgotPasswordPage";
+
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +26,11 @@ function App() {
         {/* Register Page */}
 
         <Route path="/register" element={<RegisterPage />} />
+
+
+        {/* Forgot Password */}
+
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* DASHBOARD */}
         <Route path="/dashboard" element={<ProtectedRoute>

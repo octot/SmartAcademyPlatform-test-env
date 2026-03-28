@@ -41,11 +41,14 @@ export default function LoginForm() {
                 <button onClick={() => navigate("/register")}>
                     Create an account
                 </button>
+                <button className="forgot-link" onClick={() => navigate("/forgot-password")}
+                >
+                    Forgot Password?
+                </button>
                 {/* <label>
                     <input type="checkbox" />
                     Remember me
                 </label> */}
-                <span className="forgot-link">Forgot Password?</span>
             </div>
         </div>
 

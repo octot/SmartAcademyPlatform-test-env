@@ -31,4 +31,14 @@ export const register = async (data) => {
         }, 800);
     })
 
-} 
+}
+
+export const forgotPassword = async (data) => {
+
+    console.log("Sending otp to", data.email);
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ message: "User registered successfully" });
+        }, 800);
+    })
+}
