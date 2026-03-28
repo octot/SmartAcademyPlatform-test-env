@@ -6,6 +6,8 @@ import ProtectedRoute from "./modules/routes/ProtectedRoute";
 import TutorsPage from "./modules/dashboard/pages/TutorsPage";
 import AdminPage from "./modules/dashboard/pages/AdminPage"
 import StudentsPage from "./modules/dashboard/pages/StudentsPage"
+import DashboardLayout from "./modules/layouts/DashboardLayout"
+import PERMISSIONS from "./modules/shared/constants/permissions"
 function App() {
   return (
     <BrowserRouter>
@@ -18,34 +20,26 @@ function App() {
 
         {/* DASHBOARD */}
         <Route path="/dashboard" element={<ProtectedRoute>
-          <DashboardPage />
-        </ProtectedRoute>} />
-        <Route
-          path="/dashboard/students"
-          element={
-            <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>}>
+          <Route index element={<DashboardPage />} />
+          <Route path="students" element={
+            <ProtectedRoute permission={PERMISSIONS.STUDENT.VIEW} >
               <StudentsPage />
             </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/tutors"
-          element={
-            <ProtectedRoute>
-              <TutorsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/admin"
-          element={
-            <ProtectedRoute>
+          } />
+          <Route path="tutors"
+            element={
+              <ProtectedRoute permis sion={PERMISSIONS.TUTOR.VIEW}>
+                <TutorsPage />
+              </ProtectedRoute>
+            } />
+          <Route path="admin" element={
+            <ProtectedRoute permission={PERMISSIONS.ADMIN.ACCESS}>
               <AdminPage />
             </ProtectedRoute>
-          }
-        />
-
-
+          } />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

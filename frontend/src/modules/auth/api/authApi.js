@@ -13,9 +13,10 @@ export const login = async (data) => {
                 },
                 roles: ["ADMIN"],
                 permissions: [
-                    "CREATE_USER",
-                    "VIEW_DASHBOARD",
-                    "ASSIGN_TUTOR"
+                    "STUDENT_VIEW",
+                    "STUDENT_EDIT",
+                    "TUTOR_VIEW"
+                    , "ADMIN_ACCESS"
                 ]
             });
         }, 800);

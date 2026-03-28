@@ -11,12 +11,13 @@ export const AuthProvider = ({ children }) => {
         roles: [],
         permissions: []
     });
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const stored = localStorage.getItem("auth");
         if (stored) {
             setAuth(JSON.parse(stored));
         }
+        setLoading(false);
     }, []);
 
     const login = async (credentials) => {
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         }
         setAuth(authData);
         localStorage.setItem("auth", JSON.stringify(authData))
-   
+
         return authData;
     }
 
@@ -47,11 +48,18 @@ export const AuthProvider = ({ children }) => {
     }
 
     const hasPermission = (perm) => {
-        return auth.permissions.includes(perm);
+
+        // Only restrict things when a permission is explicitly provided.
+        if (!perm) return true;
+
+        if (Array.isArray(perm)) {
+            return perm.some((p) => auth.permissions?.includes(p))
+        }
+        return auth.permissions?.includes(perm);
     }
     return (
         //wrapper component
-        <AuthContext.Provider value={{ auth, login, logout, hasPermission }}>
+        <AuthContext.Provider value={{ auth, login, logout, hasPermission, loading }}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,3 +1,4 @@
+import PERMISSIONS from "../../shared/constants/permissions"
 const menuItems = [
     {
         label: "Dashboard",
@@ -6,17 +7,17 @@ const menuItems = [
     {
         label: "Students",
         path: "/dashboard/students",
-        permission: "VIEW_STUDENTS",
+        permission: PERMISSIONS.STUDENT.VIEW,
     },
     {
         label: "Tutors",
         path: "/dashboard/tutors",
-        permission: "VIEW_TUTORS",
+        permission: PERMISSIONS.TUTOR.VIEW,
     },
     {
         label: "Admin Panel",
         path: "/dashboard/admin",
-        permission: "ADMIN_ACCESS",
+        permission: PERMISSIONS.ADMIN.ACCESS,
     },
 ];
 

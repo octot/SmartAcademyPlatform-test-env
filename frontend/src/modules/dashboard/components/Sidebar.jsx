@@ -12,7 +12,7 @@ export default function Sidebar() {
             <ul>
                 {menuItems.map((item) => {
                     if (item.permission && !hasPermission(item.permission)) { return null; }
-                    const isActive = location.pathname == item.path;
+                    const isActive = location.pathname === item.path;
                     return (
                         <li
                             key={item.path}
