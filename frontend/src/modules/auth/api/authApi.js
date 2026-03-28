@@ -42,3 +42,17 @@ export const forgotPassword = async (data) => {
         }, 800);
     })
 }
+
+export const verifyOtp = async ({ email, otp }) => {
+  console.log("Verifying OTP:", email, otp);
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (otp === "1234") {
+        resolve({ message: "OTP valid" });
+      } else {
+        reject("Invalid OTP");
+      }
+    }, 800);
+  });
+};
