@@ -16,7 +16,7 @@ export const login = async (data) => {
                     "STUDENT_VIEW",
                     "STUDENT_EDIT",
                     "TUTOR_VIEW"
-                    , "ADMIN_ACCESS"
+                    // , "ADMIN_ACCESS"
                 ]
             });
         }, 800);

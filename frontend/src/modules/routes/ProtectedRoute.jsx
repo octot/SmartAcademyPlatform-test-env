@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children, permission }) {
 
     //Route based protection 
     if (permission && !hasPermission(permission)) {
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/unauthorized" replace />;
     }
 
     return children;

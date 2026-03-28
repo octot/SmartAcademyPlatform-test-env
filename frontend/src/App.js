@@ -8,6 +8,7 @@ import AdminPage from "./modules/dashboard/pages/AdminPage"
 import StudentsPage from "./modules/dashboard/pages/StudentsPage"
 import DashboardLayout from "./modules/layouts/DashboardLayout"
 import PERMISSIONS from "./modules/shared/constants/permissions"
+import UnauthorizedPage from "./modules/shared/pages/UnauthorizedPage";
 function App() {
   return (
     <BrowserRouter>
@@ -40,6 +41,8 @@ function App() {
             </ProtectedRoute>
           } />
         </Route>
+
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
       </Routes>
     </BrowserRouter>
   );
