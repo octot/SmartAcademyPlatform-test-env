@@ -1,5 +1,5 @@
 import "./VerifyOtpForm.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { verifyOtp } from "../api/authApi";
 import { useNavigate, useLocation } from "react-router-dom";
 export default function VerifyOtpForm() {
@@ -8,6 +8,13 @@ export default function VerifyOtpForm() {
     const location = useLocation();
 
     const email = location.state?.email;
+
+    useEffect(() => {
+        if (!email) {
+            navigate("/forgot-password")
+        }
+
+    }, [email, navigate])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,10 +33,11 @@ export default function VerifyOtpForm() {
             <form onSubmit={handleSubmit} >
                 <input type="text" placeholder="Enter OTP" className="input-field" value={otp}
                     onChange={(e) => setOtp(e.target.value)} />
+                <button type="submit" className="otp-btn">
+                    Verify →
+                </button>
             </form>
-            <button type="submit" className="otp-btn">
-                Verify →
-            </button>
+
         </div>
     )
 

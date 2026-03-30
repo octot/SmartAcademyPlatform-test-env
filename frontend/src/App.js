@@ -12,6 +12,7 @@ import UnauthorizedPage from "./modules/shared/pages/UnauthorizedPage";
 import RegisterPage from "./modules/auth/pages/RegisterPage";
 import ForgotPasswordPage from "./modules/auth/pages/ForgotPasswordPage";
 import VerifyOtpPage from "./modules/auth/pages/VerifyOtpPage"
+import RestPasswordForm from "./modules/auth/pages/RestPasswordPage";
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +33,9 @@ function App() {
 
         {/* VerifyOtpPage */}
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
+        {/* ResetPassword page */}
+        <Route path="/reset-password" element={<RestPasswordForm />} />
 
 
         {/* DASHBOARD */}

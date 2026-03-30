@@ -44,15 +44,25 @@ export const forgotPassword = async (data) => {
 }
 
 export const verifyOtp = async ({ email, otp }) => {
-  console.log("Verifying OTP:", email, otp);
+    console.log("Verifying OTP:", email, otp);
 
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (otp) {
+                resolve({ message: "OTP valid" });
+            } else {
+                reject("Invalid OTP");
+            }
+        }, 800);
+    });
+};
+
+export const resetPassword = async ({ email, password }) => {
+  console.log("Resetting password for:", email);
+
+  return new Promise((resolve) => {
     setTimeout(() => {
-      if (otp === "1234") {
-        resolve({ message: "OTP valid" });
-      } else {
-        reject("Invalid OTP");
-      }
+      resolve({ message: "Password updated" });
     }, 800);
   });
 };
