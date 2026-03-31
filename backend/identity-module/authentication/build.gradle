@@ -41,6 +41,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    implementation 'org.postgresql:postgresql'
+
 //Mail
     implementation 'com.sendgrid:sendgrid-java:4.10.2'
 

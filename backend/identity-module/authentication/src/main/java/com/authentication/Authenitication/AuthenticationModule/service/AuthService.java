@@ -84,7 +84,7 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-//        user.setRoles(userRole);
+        user.setRoles(userRole);
         user.setEmailVerified(false);
         user.setStatus(UserStatus.PENDING);
 

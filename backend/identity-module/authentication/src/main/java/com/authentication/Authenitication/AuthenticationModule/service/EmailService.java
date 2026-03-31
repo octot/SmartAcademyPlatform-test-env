@@ -24,10 +24,10 @@ public class EmailService {
 
 
 
-    @Value("${SENDGRID_API_KEY}")
+    @Value("${sendgrid.api.key}")
     private String sendGridApiKey;
 
-    @Value("${app.mail.from}")
+    @Value("${sendgrid.from.email}")
     private String fromEmail;
 
     public EmailService(TemplateEngine templateEngine) {

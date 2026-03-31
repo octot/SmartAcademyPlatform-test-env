@@ -10,15 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuthorizationRepository extends JpaRepository<UserRole, Long> {
     @Query("""
-        SELECT COUNT(p) > 0
-        FROM UserRole ur
-        JOIN ur.role r
-        JOIN r.permissions p
-        WHERE ur.user.id = :userId
-        AND p.name = :permission
-    """)
-    boolean existsByUserIdAndPermissionName(
-            @Param("userId") Long userId,
-            @Param("permission") String permission
-    );
+    SELECT COUNT(p)
+    FROM UserRole ur, RolePermission rp, Permission p
+    WHERE ur.roleId = rp.roleId
+    AND rp.permissionId = p.id
+    AND ur.userId = :userId
+    AND p.name = :permissionName
+""")
+    long countByUserIdAndPermissionName(Long userId, String permissionName);
 }

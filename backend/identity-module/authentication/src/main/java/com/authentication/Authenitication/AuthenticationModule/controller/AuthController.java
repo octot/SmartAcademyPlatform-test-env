@@ -1,8 +1,7 @@
 package com.authentication.Authenitication.AuthenticationModule.controller;
 
-import com.authentication.Authenitication.AuthenticationModule.dto.ChangePasswordRequest;
-import com.authentication.Authenitication.AuthenticationModule.dto.LoginRequest;
-import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.dto.*;
+import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.security.JwtUtil;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
@@ -11,6 +10,8 @@ import com.authentication.Authenitication.AuthenticationModule.service.SecurityU
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import com.authentication.Authenitication.AuthenticationModule.otp.ResendOtpRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
+import com.authentication.Authenitication.Authorization.entity.Permission;
+import com.authentication.Authenitication.Authorization.entity.Role;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -41,13 +43,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
         CustomUserDetails user =
                 (CustomUserDetails) customUserDetailsService
                         .loadUserByUsername(request.getLogin());
         String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(Map.of("token", token));
+
+        AppUser userDetails = userService.findByUsername(request.getLogin());
+
+        UserDto userDto = new UserDto(userDetails.getId(), userDetails.getUsername());
+        List<String> roles = userDetails.getRoles()
+                .stream()
+                .map(Role::getName)
+                .toList();
+        List<String> permissions = userDetails.getRoles().stream()
+                .flatMap(role -> role.getPermission().stream())
+                .map(Permission::getName)
+                .distinct()
+                .toList();
+
+        return new LoginResponse(token, userDto, permissions, roles);
     }
 
     @PostMapping("/register")

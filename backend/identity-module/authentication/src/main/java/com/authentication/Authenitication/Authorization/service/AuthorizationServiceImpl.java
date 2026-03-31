@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorizationServiceImpl implements AuthorizationService{
+public class AuthorizationServiceImpl implements AuthorizationService {
 
     private static final Logger log =
             LoggerFactory.getLogger(AuthorizationServiceImpl.class);
@@ -25,6 +25,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     private final AuthorizationRepository authorizationRepository;
     private final PermissionRepository permissionRepository;
     private final BoundaryValidatorRegistry validatorRegistry;
+
     public AuthorizationServiceImpl(UserRoleRepository userRoleRepository, RolePermissionRepository rolePermissionRepository, AuthorizationRepository authorizationRepository, PermissionRepository permissionRepository, BoundaryValidatorRegistry validatorRegistry) {
         this.authorizationRepository = authorizationRepository;
         this.permissionRepository = permissionRepository;
@@ -56,7 +57,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         Long userId = userDetails.getUser().getId();
         boolean allowed =
                 authorizationRepository
-                        .existsByUserIdAndPermissionName(userId, permission);
+                        .countByUserIdAndPermissionName(userId, permission) > 0;
 
         if (!allowed) {
             log.warn("AUTH_DENIED | userId={} | permission={}",
@@ -66,21 +67,21 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             );
         }
 
-        Permission permissionEntity=
+        Permission permissionEntity =
                 permissionRepository.findByName(permission)
-                        .orElseThrow(()->
+                        .orElseThrow(() ->
                                 new AppException("AUTH_INVALID_PERMISSION"));
 
-        Scope scope=permissionEntity.getScope();
-        if(scope == Scope.OWN || scope == Scope.ASSIGNED){
-            if(resourceId==null){
+        Scope scope = permissionEntity.getScope();
+        if (scope == Scope.OWN || scope == Scope.ASSIGNED) {
+            if (resourceId == null) {
                 throw new AppException("RESOURCE_REQUIRED");
             }
-            BoundaryValidator validator=validatorRegistry.getValidator(permissionEntity.getResource());
-            validator.validate(userId,resourceId,scope);
+            BoundaryValidator validator = validatorRegistry.getValidator(permissionEntity.getResource());
+            validator.validate(userId, resourceId, scope);
 
         }
-        log.info("AUTH_ALLOWED | userId={} | permission={}",userId,permission);
+        log.info("AUTH_ALLOWED | userId={} | permission={}", userId, permission);
 
     }
 }
