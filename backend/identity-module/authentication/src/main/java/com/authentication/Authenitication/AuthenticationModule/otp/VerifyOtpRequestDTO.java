@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class VerifyOtpRequestDTO {
 
-    private String email;
+    private String login;
     private String otp;
+    private OtpPurpose purpose;
 }

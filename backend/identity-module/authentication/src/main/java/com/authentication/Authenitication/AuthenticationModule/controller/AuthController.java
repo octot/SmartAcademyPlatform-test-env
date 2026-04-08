@@ -2,6 +2,9 @@ package com.authentication.Authenitication.AuthenticationModule.controller;
 
 import com.authentication.Authenitication.AuthenticationModule.dto.*;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
+import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
+import com.authentication.Authenitication.AuthenticationModule.otp.ForgotRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpResponse;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.security.JwtUtil;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
@@ -13,6 +16,8 @@ import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequ
 import com.authentication.Authenitication.Authorization.entity.Permission;
 import com.authentication.Authenitication.Authorization.entity.Role;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +30,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtService;
@@ -43,8 +49,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
         CustomUserDetails user =
                 (CustomUserDetails) customUserDetailsService
                         .loadUserByUsername(request.getLogin());
@@ -63,7 +69,18 @@ public class AuthController {
                 .distinct()
                 .toList();
 
-        return new LoginResponse(token, userDto, permissions, roles);
+        ResponseCookie responseCookie = ResponseCookie.from("accessToken", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(60 * 60)
+                .sameSite("Lax")
+                .build();
+        LoginResponse response = new LoginResponse(userDto, permissions, roles);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(response);
+
     }
 
     @PostMapping("/register")
@@ -90,18 +107,28 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(
+    public VerifyOtpResponse verifyOtp(
             @RequestBody VerifyOtpRequestDTO request) {
-        authService.verifyEmailOtp(request);
-        return ResponseEntity.ok(
-                Map.of("message", "Email verified successfully. You can now login.")
-        );
+        return authService.verifyEmailOtp(request);
     }
 
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequestDTO request) {
-        String otp = authService.resendEmailOtp(request.getEmail());
+        String otp = authService.resendEmailOtp(request.getLogin());
         return ResponseEntity.ok(Map.of("OtpSuccess", otp));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotRequestDTO request) {
+        String otp = authService.forgotEmailOtp(request.getLogin());
+        return ResponseEntity.ok(Map.of("OtpSuccess", otp));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok("Password reset successful");
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.authentication.Authenitication.AuthenticationModule.service;
 
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
+import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
 import com.authentication.Authenitication.AuthenticationModule.otp.*;
 import com.authentication.Authenitication.Authorization.entity.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
@@ -25,29 +26,53 @@ public class AuthService {
     private final OtpDeliveryService otpDeliveryService;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final TokenService tokenService;
 
-
-    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService) {
         this.userRepository = userRepository;
         this.otpService = otpService;
         this.otpDeliveryService = otpDeliveryService;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.tokenService = tokenService;
     }
 
-    public void verifyEmailOtp(VerifyOtpRequestDTO request) {
+    public VerifyOtpResponse verifyEmailOtp(VerifyOtpRequestDTO request) {
 
-        AppUser user = userRepository.findByEmail(request.getEmail())
+        AppUser user = userRepository.findByEmail(request.getLogin())
                 .orElseThrow(() -> new AppException("AUTH_011"));
 
-        if (user.isEmailVerified()) {
-            throw new AppException("AUTH_007");
+        otpService.verifyOtp(user, request.getPurpose(), request.getOtp());
+
+        switch (request.getPurpose()) {
+            case SIGNUP:
+                if (user.isEmailVerified()) {
+                    throw new AppException("AUTH_007");
+                }
+
+                user.setEmailVerified(true);
+                user.setStatus(UserStatus.ACTIVE);
+                userRepository.save(user);
+                return new VerifyOtpResponse("Signup verified successfully");
+
+            case PASSWORD_RESET:
+                String resetToken = tokenService.generateResetToken(user);
+                return new VerifyOtpResponse("OTP verified", resetToken);
+
+            default:
+                throw new AppException("AUTH_017");
         }
-        otpService.verifyOtp(user, OtpPurpose.SIGNUP, request.getOtp());
-        user.setEmailVerified(true);
-        user.setStatus(UserStatus.ACTIVE);
+
+    }
+
+    public void resetPassword(ResetPasswordRequest request) {
+        String email = tokenService.validateResetToken(request.getResetToken());
+        AppUser user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException("AUTH_011"));
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
+
 
     @Transactional
     public String resendEmailOtp(String email) {
@@ -58,13 +83,31 @@ public class AuthService {
         if (user.isEmailVerified()) {
             throw new AppException("AUTH_008");
         }
-        otpService.otpResentLimitCheck(user,OtpPurpose.SIGNUP);
+        otpService.otpResentLimitCheck(user, OtpPurpose.SIGNUP);
         Otp otp = otpService.generateOtp(user, OtpPurpose.SIGNUP);
 
         otpDeliveryService.sendOtp(
                 user.getEmail(),
                 otp.getOtpValue(),
                 OtpPurpose.SIGNUP.getExpiryMinutes()
+        );
+        return otp.getOtpValue();
+    }
+
+    @Transactional
+    public String forgotEmailOtp(String email) {
+
+        AppUser user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException("AUTH_011"));
+
+
+        otpService.otpResentLimitCheck(user, OtpPurpose.PASSWORD_RESET);
+        Otp otp = otpService.generateOtp(user, OtpPurpose.PASSWORD_RESET);
+
+        otpDeliveryService.sendOtp(
+                user.getEmail(),
+                otp.getOtpValue(),
+                OtpPurpose.PASSWORD_RESET.getExpiryMinutes()
         );
         return otp.getOtpValue();
     }
@@ -79,7 +122,7 @@ public class AuthService {
         }
     }
 
-    public  void createUser(RegisterRequestDTO request, Set<Role> userRole) {
+    public void createUser(RegisterRequestDTO request, Set<Role> userRole) {
         AppUser user = new AppUser();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());

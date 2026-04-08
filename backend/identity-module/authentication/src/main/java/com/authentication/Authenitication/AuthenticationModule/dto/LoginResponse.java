@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class LoginResponse {
-    private String token;
     private UserDto user;
     List<String> permissions;
     List<String> roles;

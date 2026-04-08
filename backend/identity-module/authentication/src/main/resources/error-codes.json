@@ -4,7 +4,7 @@
     "status": 401
   },
   "AUTH_002": {
-    "message": "Email not verified",
+    "message": "EMAIL_NOT_VERIFIED",
     "status": 403
   },
   "AUTH_003": {
@@ -55,12 +55,17 @@
     "message": "Otp Limit Exceeded:",
     "status": 400
   },
+
   "AUTH_015": {
     "message": "Auth  Resend Cooldown:",
     "status": 400
   },
   "AUTH_016": {
     "message": "To Many requests in 10 mins:",
+    "status": 400
+  },
+  "AUTH_017": {
+    "message": "Unsupported OTP purpose:",
     "status": 400
   },
   "VAL_001": {
@@ -123,7 +128,8 @@
     "message": "Permission invalid",
     "status": 403
   },
-  "RESOURCE_REQUIRED":
-  {  "message": "ResourceId required for scoped permission",
-    "status": 500}
+  "RESOURCE_REQUIRED": {
+    "message": "ResourceId required for scoped permission",
+    "status": 500
+  }
 }

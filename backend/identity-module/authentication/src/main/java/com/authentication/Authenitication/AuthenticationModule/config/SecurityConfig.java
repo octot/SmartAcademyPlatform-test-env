@@ -22,7 +22,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(
+        http.cors(cors -> {})
+                .csrf(
                         // ❌ Disable CSRF (JWT is stateless)
                         csrf -> csrf.disable())
                 // ❌ Disable session creation
@@ -38,6 +39,8 @@ public class SecurityConfig {
                                 "/auth/verify-otp",
                                 "/error",
                                 "/auth/resend-otp",
+                                "/auth/forgot-password",
+                                "/auth/reset-password",
                                 "/dev/email",
                                 "/actuator/**",
                                 "/students/**"

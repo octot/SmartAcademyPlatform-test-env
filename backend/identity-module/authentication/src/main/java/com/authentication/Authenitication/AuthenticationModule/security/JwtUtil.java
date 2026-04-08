@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
@@ -21,6 +22,7 @@ public class JwtUtil {
     private String secret;
 
     private SecretKey getSigningKey() {
+        System.out.println("FromJWTUtil "+ secret);
         return Keys.hmacShaKeyFor(
                 Base64.getDecoder().decode(secret)
         );
@@ -48,16 +50,27 @@ public class JwtUtil {
     }
 
     //Validate token
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractUserName(token).equals
-                (userDetails.getUsername())
-                && !isTokenExpired(token);
-    }
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token) && isSignatureValid(token);}
 
     public Integer extractTokenVersion(String token) {
-        return extractClaim(token, claims ->
+        return extractClaim(token,
+                claims ->
                 claims.get("tokenVersion", Integer.class)
         );
+    }
+
+    public boolean isSignatureValid(String token) {
+        try {
+            Key key = Keys.hmacShaKeyFor(secret.getBytes());
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token); // 🔥 THIS validates signature
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

@@ -10,7 +10,6 @@ public enum OtpPurpose {
     PASSWORD_RESET(5, 3),
     PROFILE_UPDATE(5, 3),
     EMAIL_CHANGE(10, 5);
-
     private final int expiryMinutes;
     private final int maxAttempts;
 

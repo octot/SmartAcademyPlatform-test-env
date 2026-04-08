@@ -7,6 +7,7 @@ import com.authentication.Authenitication.AuthenticationModule.service.SecurityU
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,29 +42,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         try {
-            String authHeader = request.getHeader("Authorization");
-            String token = null;
-            String username = null;
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7);
-                username = jwtUtil.extractUserName(token);
+            String token = extractToken(request);
+            if (token == null) {
+                filterChain.doFilter(request,response);
             }
+            if (!jwtUtil.isTokenValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String username = jwtUtil.extractUserName(token);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails =
                         userDetailsService.loadUserByUsername(username);
                 // 1️⃣ Validate JWT itself (signature + expiry)
-                if (!jwtUtil.isTokenValid(token, userDetails)) {
+                if (!jwtUtil.isTokenValid(token)) {
                     filterChain.doFilter(request, response);
                     return;
                 }
-                Integer jwtVersion = jwtUtil.extractTokenVersion(token);
+                Integer tokenVersion = jwtUtil.extractTokenVersion(token);
                 // 3️⃣ Load user from DB
                 AppUser user = userService.findByUsername(username);
                 // 4️⃣ Application-level check
-                if (jwtVersion.equals(user.getTokenVersion())) {
+                if (tokenVersion.equals(user.getTokenVersion())) {
                     UsernamePasswordAuthenticationToken
                             authToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext()
                             .setAuthentication(authToken);
@@ -86,6 +91,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith("/auth/");
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("accessToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
 }

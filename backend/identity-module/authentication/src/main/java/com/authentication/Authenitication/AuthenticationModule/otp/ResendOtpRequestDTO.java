@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResendOtpRequestDTO {
-    private String email;
+    private String login;
 }
