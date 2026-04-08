@@ -6,7 +6,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     const [auth, setAuth] = useState({
-        token: null,
         user: null,
         roles: [],
         permissions: []
@@ -20,12 +19,11 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (credentials) => {
+    const loginAuth = async (credentials) => {
         const res = await loginApi(credentials);
 
         const authData =
         {
-            token: res.token,
             user: res.user,
             roles: res.roles,
             permissions: res.permissions
@@ -39,7 +37,6 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setAuth(
             {
-                token: null,
                 user: null,
                 roles: [],
                 permissions: []
@@ -59,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     }
     return (
         //wrapper component
-        <AuthContext.Provider value={{ auth, login, logout, hasPermission, loading }}>
+        <AuthContext.Provider value={{ auth, loginAuth, logout, hasPermission, loading }}>
             {children}
         </AuthContext.Provider>
     )

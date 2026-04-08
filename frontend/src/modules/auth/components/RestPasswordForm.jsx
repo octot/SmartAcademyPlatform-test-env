@@ -7,30 +7,33 @@ export default function RestPasswordForm() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const email = location?.state?.email;
+    const login = location?.state?.login;
+    const resetToken = location?.state?.resetToken;
+    console.log("location Value is ", location);
 
     useEffect(() => {
-        if (!email) {
+        if (!login) {
             navigate("/forgot-password")
         }
 
-    }, [email, navigate])
+    }, [login, navigate])
 
-    const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    if (!email) {
+
+    if (!login) {
         navigate("/forgot-password")
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
+        if (newPassword !== confirmPassword) {
             alert("Password mismatch")
             return;
         }
         try {
-            await resetPassword({ email, password })
+            await resetPassword({ resetToken, newPassword })
             navigate("/login")
         }
         catch (err) {
@@ -46,8 +49,8 @@ export default function RestPasswordForm() {
                 <input type="password"
                     placeholder="New Password"
                     className="input-field"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)} />
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)} />
 
                 <input type="password"
                     placeholder="Confirm Password"

@@ -1,26 +1,35 @@
 import "./VerifyOtpForm.css"
 import { useState, useEffect } from "react";
-import { verifyOtp } from "../api/authApi";
+import { verifyOtp ,resentOtp} from "../api/authApi";
 import { useNavigate, useLocation } from "react-router-dom";
+import { OTP_PURPOSE } from "../constants/authConstants";
 export default function VerifyOtpForm() {
     const [otp, setOtp] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
 
-    const email = location.state?.email;
+    const login = location.state?.login;
+    const triggerOtp = location.state?.triggerOtp;
 
     useEffect(() => {
-        if (!email) {
+        if (!login) {
             navigate("/forgot-password")
         }
 
-    }, [email, navigate])
+    }, [login, navigate])
+    useEffect(() => {
+        if (triggerOtp) {
+            resentOtp({ login });
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await verifyOtp({ email, otp });
-            navigate("/reset-password", { state: { email } });
+            const res=await verifyOtp({ login, otp,  purpose: OTP_PURPOSE.PASSWORD_RESET});
+            console.log("resultfromVerify",res)
+            const resetToken=res?.resetToken
+            navigate("/reset-password", { state: {login,resetToken} });
         }
         catch (err) {
             console.error(err);

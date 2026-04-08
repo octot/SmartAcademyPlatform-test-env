@@ -8,7 +8,7 @@ export default function RegisterForm() {
 
     const [form, setForm] = useState
         ({
-            name: "",
+            username: "",
             email: "",
             password: ""
         })
@@ -24,7 +24,7 @@ export default function RegisterForm() {
         try {
             await register(form);
             alert("Registered succesfully")
-            navigate("/login")
+            navigate("/verify-email", { state: { email: form.email } });
         }
         catch (err) {
             console.error(err);
@@ -35,7 +35,7 @@ export default function RegisterForm() {
         <div className="register-card">
             <h2>Create Account</h2>
             <form onSubmit={handleSubmit}>
-                <input type="text" name="name" placeHolder="Enter Name" value={form.name} onChange={handleChange} className="input-field" />
+                <input type="text" name="username" placeHolder="Enter Name" value={form.username} onChange={handleChange} className="input-field" />
                 <input type="email" name="email" placeholder="Enter Email" value={form.email} onChange={handleChange} className="input-field" />
                 <input
                     type="password"

@@ -2,6 +2,7 @@ import { useAuth } from "../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 export default function DashboardPage() {
     const { auth, hasPermission, logout } = useAuth();
+    console.log("DasHboard", auth);
     const navigate = useNavigate();
     const handleLogOut = () => {
         logout();

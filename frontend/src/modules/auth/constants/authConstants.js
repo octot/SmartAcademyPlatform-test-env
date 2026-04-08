@@ -1,0 +1,4 @@
+export const OTP_PURPOSE = {
+    SIGNUP: "SIGNUP",
+    PASSWORD_RESET: "PASSWORD_RESET"
+};

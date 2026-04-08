@@ -3,33 +3,52 @@ import "./LoginForm.css"
 import { useAuth } from "../../shared/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
-    const { login } = useAuth();
+    const { loginAuth } = useAuth();
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
         console.log("CLICK WORKING ✅");
         try {
-            const res = await login({ email, password });
+            const res = await loginAuth({ login, password });
             console.log("Login Success", res);
             navigate("/dashboard");
         }
         catch (err) {
-            console.error("Login Failed", err);
+            const errorCode = err?.code;
+            console.log("Handled Error:", errorCode);
+            switch (errorCode) {
+                case "USER_NOT_FOUND":
+                    navigate("/register", { state: { login } });
+                    break;
+
+                case "EMAIL_NOT_VERIFIED":
+                    navigate("/verify-email", { state: { login,triggerOtp:true } });
+                    break;
+
+                case "INVALID_PASSWORD":
+                    setError("Wrong password");
+                    break;
+
+                default:
+                    setError(err.message);
+            }
         }
     };
-    //if i only place return (using asi-automatic semicolon insertion so always add return () instead of )
     return (
         <div className="login-card">
             <h2>Welcome Back</h2>
             <form onSubmit={handleSubmit}>
-                <input type="email"
-                    placeholder="Enter Email"
-                    className="input-field" value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                <input
+                    type="text"
+                    placeholder="Enter email or username"
+                    className="input-field"
+                    value={login}
+                    onChange={(e) => setLogin(e.target.value)}
                 />
                 <input type="password" placeholder="Enter password" className="input-field" value={password} onChange={(e) => setPassword(e.target.value)}
                 />

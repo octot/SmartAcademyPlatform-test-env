@@ -13,6 +13,7 @@ import RegisterPage from "./modules/auth/pages/RegisterPage";
 import ForgotPasswordPage from "./modules/auth/pages/ForgotPasswordPage";
 import VerifyOtpPage from "./modules/auth/pages/VerifyOtpPage"
 import RestPasswordForm from "./modules/auth/pages/RestPasswordPage";
+import VerifyEmailPage from "./modules/auth/pages/VerifyEmailPage";
 function App() {
   return (
     <BrowserRouter>
@@ -30,9 +31,15 @@ function App() {
 
         {/* Forgot Password */}
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        
+
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
 
         {/* VerifyOtpPage */}
+
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
+
 
         {/* ResetPassword page */}
         <Route path="/reset-password" element={<RestPasswordForm />} />
@@ -50,7 +57,7 @@ function App() {
           } />
           <Route path="tutors"
             element={
-              <ProtectedRoute permis sion={PERMISSIONS.TUTOR.VIEW}>
+              <ProtectedRoute permission={PERMISSIONS.TUTOR.VIEW}>
                 <TutorsPage />
               </ProtectedRoute>
             } />
