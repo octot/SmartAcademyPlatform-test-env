@@ -18,7 +18,7 @@ public class SecurityUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = userService.findByUsername(username);
         return new CustomUserDetails(user);
     }

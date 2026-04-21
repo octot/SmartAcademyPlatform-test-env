@@ -55,7 +55,6 @@
     "message": "Otp Limit Exceeded:",
     "status": 400
   },
-
   "AUTH_015": {
     "message": "Auth  Resend Cooldown:",
     "status": 400
@@ -104,8 +103,20 @@
     "message": "ROLE_ADMIN_NOT_FOUND",
     "status": 500
   },
+  "ROLE_003": {
+    "message": "NO_ROLES_ASSIGNED",
+    "status": 500
+  },
+  "ROLE_004": {
+    "message": "Invalid role switch",
+    "status": 500
+  },
   "PERMISSION_001": {
     "message": "PERMISSIONS_NOT_FOUND",
+    "status": 500
+  },
+  "PERMISSION_002": {
+    "message": "NO_PERMISSIONS-AVAILABLE",
     "status": 500
   },
   "EMAIL_001": {

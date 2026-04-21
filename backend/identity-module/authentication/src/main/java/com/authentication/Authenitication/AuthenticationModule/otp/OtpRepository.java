@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface OtpRepository extends JpaRepository<Otp, Long> {
@@ -20,7 +21,7 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
                 ORDER BY o.createdAt DESC
             """)
     Optional<Otp> findActiveOtp(
-            @Param("userId") Long userId,
+            @Param("userId") UUID userId,
             @Param("purpose") OtpPurpose purpose
     );
 
@@ -34,7 +35,7 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
               AND o.purpose = :purpose
               AND o.isUsed = false
             """)
-    void invalidateActiveOtp(@Param("userId") Long userId, @Param("purpose") OtpPurpose otpPurpose);
+    void invalidateActiveOtp(@Param("userId") UUID userId, @Param("purpose") OtpPurpose otpPurpose);
 
 
     @Query("""
@@ -45,12 +46,12 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
          AND o.createdAt > :time
        """)
     long countRecentOtps(
-            Long userId,
+            UUID userId,
             OtpPurpose purpose,
             Instant time
     );
     Optional<Otp> findTopByUserIdAndPurposeOrderByCreatedAtDesc(
-            Long userId,
+            UUID userId,
             OtpPurpose purpose
     );
 

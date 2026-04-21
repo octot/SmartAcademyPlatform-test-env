@@ -2,8 +2,11 @@ package com.authentication.Authenitication.AuthenticationModule.controller;
 
 
 import com.authentication.Authenitication.AuthenticationModule.dto.AboutUserResponse;
+import com.authentication.Authenitication.AuthenticationModule.dto.AuthResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.EmailChangeRequestDto;
+import com.authentication.Authenitication.AuthenticationModule.dto.SwitchRoleRequest;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
+import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.EmailChangeService;
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
 import jakarta.validation.Valid;
@@ -11,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -19,10 +25,11 @@ public class UserController {
 
 
     private final EmailChangeService emailChangeService;
+    private final AuthService authService;
 
-
-    public UserController(EmailChangeService emailChangeService) {
+    public UserController(EmailChangeService emailChangeService, AuthService authService) {
         this.emailChangeService = emailChangeService;
+        this.authService = authService;
     }
 
 
@@ -49,7 +56,7 @@ public class UserController {
             @Valid @RequestBody EmailChangeRequestDto dto
 
     ){
-        Long userId = userDetails.getUser().getId();
+        UUID userId = userDetails.getUser().getId();
         emailChangeService.requestEmailChange(userId, dto);
         return ResponseEntity.ok("OTP sent to new email");
 
@@ -61,9 +68,18 @@ public class UserController {
             @RequestBody @Valid VerifyOtpRequestDTO requestDto
 
     ){
-        Long userId = userDetails.getUser().getId();
+        UUID userId = userDetails.getUser().getId();
         emailChangeService.verifyEmailChange(userId,requestDto);
         return ResponseEntity.ok("email success");
 
+    }
+
+    @PostMapping("/switch-role")
+    public ResponseEntity<AuthResponse> switchRole(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody SwitchRoleRequest request
+    ) {
+        AuthResponse response = authService.switchRole(userDetails, request.getRole());
+        return ResponseEntity.ok(response);
     }
 }

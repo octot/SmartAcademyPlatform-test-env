@@ -5,6 +5,7 @@ public enum Resource {
     USER,
     ROLE,
     ACCESS_REQUEST,
-    SYSTEM
+    SYSTEM,
+    ADMIN
 
 }

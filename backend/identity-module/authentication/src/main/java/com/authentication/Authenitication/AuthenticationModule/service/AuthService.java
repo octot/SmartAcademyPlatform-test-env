@@ -1,21 +1,26 @@
 package com.authentication.Authenitication.AuthenticationModule.service;
 
 
+import com.authentication.Authenitication.AuthenticationModule.dto.AuthResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
 import com.authentication.Authenitication.AuthenticationModule.otp.*;
-import com.authentication.Authenitication.Authorization.entity.Role;
+import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
+import com.authentication.Authenitication.AuthenticationModule.security.JwtService;
+import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.util.UsernameValidator;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -27,14 +32,16 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final TokenService tokenService;
+    private final  JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService) {
+    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, JwtService jwtService) {
         this.userRepository = userRepository;
         this.otpService = otpService;
         this.otpDeliveryService = otpDeliveryService;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
         this.tokenService = tokenService;
+        this.jwtService = jwtService;
     }
 
     public VerifyOtpResponse verifyEmailOtp(VerifyOtpRequestDTO request) {
@@ -152,5 +159,19 @@ public class AuthService {
         checkUserNameAndEmailExist(request);
         createUser(request, Set.of(roleService.getAdminUserRole()));
     }
+
+    public AuthResponse switchRole(CustomUserDetails userDetails, String requestedRole) {
+
+        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        // 🔥 VALIDATION
+        if (!roles.contains(requestedRole)) {
+            throw new AppException("ROLE_004");
+        }
+        String token = jwtService.generateToken(userDetails, requestedRole);
+        return new AuthResponse(token, roles, requestedRole);
+
+
+    }
+
 
 }

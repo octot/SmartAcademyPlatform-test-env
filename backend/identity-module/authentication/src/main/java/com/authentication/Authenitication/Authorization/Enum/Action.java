@@ -9,5 +9,8 @@ public enum Action {
     REJECT,
     ASSIGN,
     DISABLE,
-    ENABLE
+    ENABLE,
+    VIEW,
+    EDIT,
+    MANAGE
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 public class EmailChangeService {
@@ -40,7 +41,7 @@ public class EmailChangeService {
     }
 
     @Transactional
-    public void requestEmailChange(Long userId, @Valid EmailChangeRequestDto dto) {
+    public void requestEmailChange(UUID userId, @Valid EmailChangeRequestDto dto) {
         // 1️⃣ Fetch user
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException("USER_NOT_FOUND"));
@@ -64,7 +65,7 @@ public class EmailChangeService {
 
         // 6️⃣ Create new email change request (5 min expiry)
         EmailChangeRequest request = new EmailChangeRequest();
-        request.setUserId(userId);
+        request.setUser(user);
         request.setNewEmail(dto.getNewEmail());
         request.setExpiryTime(Instant.now().plusSeconds(300));
         request.setVerified(false);
@@ -81,7 +82,7 @@ public class EmailChangeService {
     }
 
     @Transactional
-    public void verifyEmailChange(Long userId, VerifyOtpRequestDTO request){
+    public void verifyEmailChange(UUID userId, VerifyOtpRequestDTO request){
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException("AUTH_011"));
 

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/students")
 
@@ -21,7 +23,7 @@ public class StudentController {
     @GetMapping
     public String getStudents(@AuthenticationPrincipal CustomUserDetails user) {
         System.out.println(user);
-        Long userId = user.getUser().getId();
+        UUID userId = user.getUser().getId();
         return studentService.getStudents(userId);
     }
 

@@ -1,6 +1,6 @@
 package com.authentication.Authenitication.AuthenticationModule.entity;
 
-import com.authentication.Authenitication.Authorization.entity.Role;
+import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -17,8 +18,9 @@ import java.util.Set;
 public class AppUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @org.hibernate.annotations.UuidGenerator
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String username;

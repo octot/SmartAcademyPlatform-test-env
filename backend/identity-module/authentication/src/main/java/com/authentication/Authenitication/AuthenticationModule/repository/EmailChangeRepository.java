@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface EmailChangeRepository  extends JpaRepository<EmailChangeRequest,Long> {
+public interface EmailChangeRepository  extends JpaRepository<EmailChangeRequest,UUID> {
 
-    Optional<EmailChangeRequest> findByUserIdAndVerifiedFalse(Long userId);
+    Optional<EmailChangeRequest> findByUserIdAndVerifiedFalse(UUID userId);
 
-    void deleteByUserId(Long userId);
+    void deleteByUserId(UUID userId);
 
 
 }

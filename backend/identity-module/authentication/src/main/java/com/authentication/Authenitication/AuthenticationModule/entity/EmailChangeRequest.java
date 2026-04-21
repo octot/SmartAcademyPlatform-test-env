@@ -16,8 +16,10 @@ public class EmailChangeRequest {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="user_id" ,nullable=false)
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser user;
 
     @Column(name="new_email" ,nullable=false)
     private String newEmail;

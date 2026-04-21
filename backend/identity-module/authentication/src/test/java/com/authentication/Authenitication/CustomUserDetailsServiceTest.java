@@ -2,7 +2,7 @@ package com.authentication.Authenitication;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
-import com.authentication.Authenitication.Authorization.entity.Role;
+import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;

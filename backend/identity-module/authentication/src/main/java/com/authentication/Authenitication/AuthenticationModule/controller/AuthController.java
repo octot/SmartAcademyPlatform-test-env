@@ -3,18 +3,20 @@ package com.authentication.Authenitication.AuthenticationModule.controller;
 import com.authentication.Authenitication.AuthenticationModule.dto.*;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
+import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.otp.ForgotRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.otp.ResendOtpRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpResponse;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
-import com.authentication.Authenitication.AuthenticationModule.security.JwtUtil;
+import com.authentication.Authenitication.AuthenticationModule.security.JwtService;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.PasswordService;
 import com.authentication.Authenitication.AuthenticationModule.service.SecurityUserDetailsService;
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
-import com.authentication.Authenitication.AuthenticationModule.otp.ResendOtpRequestDTO;
-import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.entity.Permission;
-import com.authentication.Authenitication.Authorization.entity.Role;
+import com.authentication.Authenitication.role.Role;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,13 +36,13 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtService;
+    private final JwtService jwtService;
     private final SecurityUserDetailsService customUserDetailsService;
     private final AuthService authService;
     private final UserService userService;
     private final PasswordService passwordService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtService, SecurityUserDetailsService customUserDetailsService, AuthService authService, UserService userService, PasswordService passwordService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, SecurityUserDetailsService customUserDetailsService, AuthService authService, UserService userService, PasswordService passwordService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.customUserDetailsService = customUserDetailsService;
@@ -50,21 +53,28 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
         CustomUserDetails user =
-                (CustomUserDetails) customUserDetailsService
+                customUserDetailsService
                         .loadUserByUsername(request.getLogin());
-        String token = jwtService.generateToken(user);
+        List<String> currentRoles = user.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        if (currentRoles.isEmpty()) {
+            throw new AppException("ROLE_003");
+        }
+        String activeRole = currentRoles.getFirst();
+        String token = jwtService.generateToken(user, activeRole);
 
         AppUser userDetails = userService.findByUsername(request.getLogin());
-
         UserDto userDto = new UserDto(userDetails.getId(), userDetails.getUsername());
-        List<String> roles = userDetails.getRoles()
+        List<RoleName> roles = userDetails.getRoles()
                 .stream()
                 .map(Role::getName)
                 .toList();
         List<String> permissions = userDetails.getRoles().stream()
-                .flatMap(role -> role.getPermission().stream())
+                .flatMap(role -> role.getPermissions().stream())
                 .map(Permission::getName)
                 .distinct()
                 .toList();
@@ -76,7 +86,7 @@ public class AuthController {
                 .maxAge(60 * 60)
                 .sameSite("Lax")
                 .build();
-        LoginResponse response = new LoginResponse(userDto, permissions, roles);
+        LoginResponse response = new LoginResponse(userDto, permissions, roles,activeRole);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(response);
@@ -129,6 +139,8 @@ public class AuthController {
         authService.resetPassword(request);
         return ResponseEntity.ok("Password reset successful");
     }
+
+
 
 
 }

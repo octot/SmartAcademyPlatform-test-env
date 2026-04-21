@@ -1,10 +1,10 @@
 package com.authentication.Authenitication;
 
 
+import com.authentication.Authenitication.AuthenticationModule.controller.AuthController;
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.exception.ErrorProperties;
-import com.authentication.Authenitication.AuthenticationModule.controller.AuthController;
-import com.authentication.Authenitication.AuthenticationModule.security.JwtUtil;
+import com.authentication.Authenitication.AuthenticationModule.security.JwtService;
 import com.authentication.Authenitication.AuthenticationModule.service.SecurityUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ public class AuthControllerTest {
     @MockBean
     private AuthenticationManager authenticationManager;
     @MockBean
-    private JwtUtil jwtService;
+    private JwtService jwtService;
     @MockBean
     private SecurityUserDetailsService customUserDetailsService;
     @MockBean
@@ -50,6 +50,7 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("User registered successfully"));
     }
+
 
 
 }
