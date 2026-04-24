@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorizationControllerTest {
 
 
-    @PreAuthorize("hasAuthority('USER_VIEW')")
+    @PreAuthorize("hasAuthority('USER_VIEW_OWN')")
     @GetMapping("/view")
     public String view() {
         return "VIEW OK";
@@ -31,4 +32,9 @@ public class AuthorizationControllerTest {
         return auth.getAuthorities().toString();
     }
 
+    @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
+    @GetMapping("/create-admin")
+    public String admin() {
+        return "Create_admin_permission working";
+    }
 }

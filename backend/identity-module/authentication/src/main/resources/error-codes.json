@@ -111,6 +111,10 @@
     "message": "Invalid role switch",
     "status": 500
   },
+  "ROLE_005": {
+    "message": "Invalid role ",
+    "status": 500
+  },
   "PERMISSION_001": {
     "message": "PERMISSIONS_NOT_FOUND",
     "status": 500

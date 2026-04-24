@@ -1,7 +1,9 @@
 package com.authentication.Authenitication.AuthenticationModule.entity;
 
+import com.authentication.Authenitication.department.entity.Department;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
+import com.authentication.Authenitication.user.entity.UserProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,16 +30,11 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    @NotBlank
-    @Email
-    @Column(nullable = false, unique = true)
-    private String email;
+
 
     @Column(nullable = false)
     private boolean emailVerified;
 
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
 
     // true → account NOT locked
     // false → account locked
@@ -54,7 +51,6 @@ public class AppUser {
                     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-
-
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserProfile profile;
 }

@@ -87,7 +87,7 @@ public class CustomUserDetailsServiceTest {
         when(userRepository.existsByUsername("john"))
                 .thenReturn(false);
 
-        when(userRepository.existsByEmail("john@mail.com"))
+        when(userRepository.existsByProfile_Email("john@mail.com"))
                 .thenReturn(false);
 
         when(roleService.getDefaultUserRole())
@@ -114,7 +114,7 @@ public class CustomUserDetailsServiceTest {
         when(userRepository.existsByUsername(any()))
                 .thenReturn(false);
 
-        when(userRepository.existsByEmail(any()))
+        when(userRepository.existsByProfile_Email(any()))
                 .thenReturn(false);
 
         when(roleService.getDefaultUserRole())

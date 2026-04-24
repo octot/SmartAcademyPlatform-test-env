@@ -36,30 +36,26 @@ public class SecurityConfig {
 
                 // ✅ Define public & secured endpoints
                 .authorizeHttpRequests(auth -> auth
+
+                        // PUBLIC AUTH ENDPOINTS
                         .requestMatchers(
-                                "/public/**",
                                 "/auth/login",
                                 "/auth/register",
                                 "/auth/verify-otp",
-                                "/error",
                                 "/auth/resend-otp",
                                 "/auth/forgot-password",
-                                "/auth/reset-password",
-                                "/auth/change-password",
-                                "/dev/email",
-                                "/actuator/**",
-                                "/students/**",
-                                "/test/admin",
-                                "/test/tutor",
-                                "/test/student",
-                                "/test/superadmin",
-                                "/test/common",
-                                "/test/view",
-                                "/test/approve",
-                                "/test/debug"
-
+                                "/auth/reset-password"
                         ).permitAll()
-                        .requestMatchers("/api/user/**").authenticated()
+
+                        // PROTECTED AUTH ENDPOINTS
+                        .requestMatchers("/auth/**").authenticated()
+
+                        // OTHER APIs
+                        .requestMatchers("/api/**").authenticated()
+
+                        .requestMatchers("/test/**").authenticated()
+
+                        // FALLBACK
                         .anyRequest().denyAll()
                 )
                 // 🔐 Register JWT filter

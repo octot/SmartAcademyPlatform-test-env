@@ -52,12 +52,12 @@ public class EmailChangeService {
         }
 
         // 3️⃣ Prevent same email update
-        if (user.getEmail().equalsIgnoreCase(dto.getNewEmail())) {
+        if (user.getProfile().getEmail().equalsIgnoreCase(dto.getNewEmail())) {
             throw new AppException("VAL_005");
         }
 
         // 4️⃣ Check if email already exists
-        if (userRepository.existsByEmail(dto.getNewEmail())) {
+        if (userRepository.existsByProfile_Email(dto.getNewEmail())) {
             throw new AppException("VAL_006");
         }
         // 5️⃣ Delete any previous pending requests
@@ -96,7 +96,7 @@ public class EmailChangeService {
 
         otpService.verifyOtp(user, OtpPurpose.EMAIL_CHANGE, request.getOtp());
 
-        user.setEmail(emailRequest.getNewEmail());
+        user.getProfile().setEmail(emailRequest.getNewEmail());
         userRepository.save(user);
 
         // 4️⃣ Delete request

@@ -34,15 +34,29 @@ public class PermissionSeeder implements CommandLineRunner {
         assignPermissionsToRoles();
     }
 
+    // =========================
+    // STEP 1: SEED PERMISSIONS
+    // =========================
     private void seedPermissions() {
 
         if (permissionRepository.count() > 0) return;
+        // USER → VIEW + EDIT (scoped)
+        createScopedPermissions(Resource.USER, Action.VIEW, "View users");
+        createScopedPermissions(Resource.USER, Action.EDIT, "Edit users");
 
-        createPermission(Resource.USER, Action.VIEW, null, "View users");
-        createPermission(Resource.USER, Action.APPROVE, null, "Approve users");
-        createPermission(Resource.ADMIN, Action.CREATE, null, " Create admin");
-        createPermission(Resource.ADMIN, Action.VIEW, null, "View admin");
+        // ADMIN → only GLOBAL
+        createPermission(Resource.ADMIN, Action.CREATE, Scope.GLOBAL, "Create admin");
+        createPermission(Resource.ADMIN, Action.VIEW, Scope.GLOBAL, "View admin");
     }
+
+    // Create OWN / DEPARTMENT / GLOBAL
+    private void createScopedPermissions(Resource resource, Action action, String desc) {
+
+        createPermission(resource, action, Scope.OWN, desc + " (OWN)");
+        createPermission(resource, action, Scope.DEPARTMENT, desc + " (DEPARTMENT)");
+        createPermission(resource, action, Scope.GLOBAL, desc + " (GLOBAL)");
+    }
+
 
     private void createPermission(Resource r, Action a, Scope s, String desc) {
         Permission p = new Permission();
@@ -54,43 +68,64 @@ public class PermissionSeeder implements CommandLineRunner {
         permissionRepository.save(p);
     }
 
+    // =========================
+    // STEP 2: ASSIGN TO ROLES
+    // =========================
     private void assignPermissionsToRoles() {
 
+        Role superAdmin = roleRepository.findByName(RoleName.SUPER_ADMIN).orElseThrow();
         Role admin = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
         Role tutor = roleRepository.findByName(RoleName.TUTOR).orElseThrow();
-        Role superAdmin = roleRepository.findByName(RoleName.SUPER_ADMIN).orElseThrow();
         Role student = roleRepository.findByName(RoleName.STUDENT).orElseThrow();
-        Permission userView = permissionRepository
-                .findByResourceAndActionAndScope(Resource.USER, Action.VIEW, null)
-                .orElseThrow();
 
-        Permission userApprove = permissionRepository
-                .findByResourceAndActionAndScope(Resource.USER, Action.APPROVE, null)
-                .orElseThrow();
+        // ===== Fetch Permissions =====
 
-        Permission adminCreate = permissionRepository
-                .findByResourceAndActionAndScope(Resource.ADMIN, Action.CREATE, null)
-                .orElseThrow();
+        // USER VIEW
+        Permission userViewOwn = getPermission(Resource.USER, Action.VIEW, Scope.OWN);
+        Permission userViewDept = getPermission(Resource.USER, Action.VIEW, Scope.DEPARTMENT);
+        Permission userViewGlobal = getPermission(Resource.USER, Action.VIEW, Scope.GLOBAL);
 
-        Permission adminView = permissionRepository
-                .findByResourceAndActionAndScope(Resource.ADMIN, Action.VIEW, null)
-                .orElseThrow();
+        // USER EDIT
+        Permission userEditOwn = getPermission(Resource.USER, Action.EDIT, Scope.OWN);
+        Permission userEditDept = getPermission(Resource.USER, Action.EDIT, Scope.DEPARTMENT);
+        Permission userEditGlobal = getPermission(Resource.USER, Action.EDIT, Scope.GLOBAL);
 
+        // ADMIN
+        Permission adminCreate = getPermission(Resource.ADMIN, Action.CREATE, Scope.GLOBAL);
+        Permission adminView = getPermission(Resource.ADMIN, Action.VIEW, Scope.GLOBAL);
+
+        // ===== SUPER ADMIN → ALL =====
         Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
         superAdmin.setPermissions(allPermissions);
 
+        // ===== ADMIN → GLOBAL CONTROL =====
         admin.getPermissions().addAll(Set.of(
-                userView,
-                userApprove,
+                userViewGlobal,
+                userEditGlobal,
                 adminCreate,
                 adminView
         ));
-        tutor.getPermissions().add(userView);
-        student.getPermissions().add(userView);
+
+        // ===== TUTOR → OWN ONLY =====
+        tutor.getPermissions().addAll(Set.of(
+                userViewOwn,
+                userEditOwn
+        ));
+
+        // ===== STUDENT → VERY LIMITED =====
+        student.getPermissions().add(userViewOwn);
+
+        // ===== SAVE =====
         roleRepository.save(superAdmin);
         roleRepository.save(admin);
         roleRepository.save(tutor);
         roleRepository.save(student);
+    }
+
+    private Permission getPermission(Resource r, Action a, Scope s) {
+        return permissionRepository
+                .findByResourceAndActionAndScope(r, a, s)
+                .orElseThrow();
     }
 
 }

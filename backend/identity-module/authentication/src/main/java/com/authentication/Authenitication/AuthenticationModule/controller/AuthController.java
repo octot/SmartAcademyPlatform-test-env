@@ -21,11 +21,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -86,7 +86,7 @@ public class AuthController {
                 .maxAge(60 * 60)
                 .sameSite("Lax")
                 .build();
-        LoginResponse response = new LoginResponse(userDto, permissions, roles,activeRole);
+        LoginResponse response = new LoginResponse(userDto, permissions, roles, activeRole);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(response);
@@ -107,10 +107,11 @@ public class AuthController {
         return ResponseEntity.ok("Password changed successfully");
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
     @PostMapping("/create-admin")
     public ResponseEntity<String> registerAdmin(@RequestBody RegisterRequestDTO request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authvalues " + auth.getAuthorities());
         userService.existsByUsername(request.getUsername());
         authService.registerForAdmin(request);
         return ResponseEntity.ok("User registered successFully");
@@ -139,8 +140,6 @@ public class AuthController {
         authService.resetPassword(request);
         return ResponseEntity.ok("Password reset successful");
     }
-
-
 
 
 }

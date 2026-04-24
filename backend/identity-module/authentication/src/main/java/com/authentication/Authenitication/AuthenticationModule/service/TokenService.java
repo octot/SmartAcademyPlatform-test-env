@@ -22,7 +22,7 @@ public class TokenService {
 
     public String generateResetToken(AppUser user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setSubject(user.getProfile().getEmail())
                 .claim("purpose", "PASSWORD_RESET")
                 .setExpiration(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                 .signWith(key) // ✅ new method

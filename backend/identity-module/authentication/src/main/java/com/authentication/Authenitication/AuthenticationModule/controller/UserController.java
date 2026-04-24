@@ -5,18 +5,22 @@ import com.authentication.Authenitication.AuthenticationModule.dto.AboutUserResp
 import com.authentication.Authenitication.AuthenticationModule.dto.AuthResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.EmailChangeRequestDto;
 import com.authentication.Authenitication.AuthenticationModule.dto.SwitchRoleRequest;
+import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.EmailChangeService;
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,10 +30,12 @@ public class UserController {
 
     private final EmailChangeService emailChangeService;
     private final AuthService authService;
+    private final UserService userService;
 
-    public UserController(EmailChangeService emailChangeService, AuthService authService) {
+    public UserController(EmailChangeService emailChangeService, AuthService authService, UserService userService) {
         this.emailChangeService = emailChangeService;
         this.authService = authService;
+        this.userService = userService;
     }
 
 
@@ -55,7 +61,7 @@ public class UserController {
             CustomUserDetails userDetails,
             @Valid @RequestBody EmailChangeRequestDto dto
 
-    ){
+    ) {
         UUID userId = userDetails.getUser().getId();
         emailChangeService.requestEmailChange(userId, dto);
         return ResponseEntity.ok("OTP sent to new email");
@@ -67,9 +73,9 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid VerifyOtpRequestDTO requestDto
 
-    ){
+    ) {
         UUID userId = userDetails.getUser().getId();
-        emailChangeService.verifyEmailChange(userId,requestDto);
+        emailChangeService.verifyEmailChange(userId, requestDto);
         return ResponseEntity.ok("email success");
 
     }
@@ -82,4 +88,11 @@ public class UserController {
         AuthResponse response = authService.switchRole(userDetails, request.getRole());
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/getUsers")
+    @PreAuthorize("hasAnyAuthority('USER_EDIT_OWN','USER_EDIT_DEPARTMENT','USER_EDIT_GLOBAL')")
+    public List<AppUser> getUsers(Authentication authentication) {
+        return userService.getUsers(authentication);
+    }
+
 }

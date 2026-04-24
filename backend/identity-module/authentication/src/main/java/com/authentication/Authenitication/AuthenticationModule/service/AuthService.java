@@ -13,6 +13,7 @@ import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.util.UsernameValidator;
+import com.authentication.Authenitication.user.entity.UserProfile;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final TokenService tokenService;
-    private final  JwtService jwtService;
+    private final JwtService jwtService;
 
     public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, JwtService jwtService) {
         this.userRepository = userRepository;
@@ -46,7 +47,7 @@ public class AuthService {
 
     public VerifyOtpResponse verifyEmailOtp(VerifyOtpRequestDTO request) {
 
-        AppUser user = userRepository.findByEmail(request.getLogin())
+        AppUser user = userRepository.findByProfile_Email(request.getLogin())
                 .orElseThrow(() -> new AppException("AUTH_011"));
 
         otpService.verifyOtp(user, request.getPurpose(), request.getOtp());
@@ -58,7 +59,7 @@ public class AuthService {
                 }
 
                 user.setEmailVerified(true);
-                user.setStatus(UserStatus.ACTIVE);
+                user.getProfile().setStatus(UserStatus.ACTIVE);
                 userRepository.save(user);
                 return new VerifyOtpResponse("Signup verified successfully");
 
@@ -74,7 +75,7 @@ public class AuthService {
 
     public void resetPassword(ResetPasswordRequest request) {
         String email = tokenService.validateResetToken(request.getResetToken());
-        AppUser user = userRepository.findByEmail(email)
+        AppUser user = userRepository.findByProfile_Email(email)
                 .orElseThrow(() -> new AppException("AUTH_011"));
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
@@ -84,7 +85,7 @@ public class AuthService {
     @Transactional
     public String resendEmailOtp(String email) {
 
-        AppUser user = userRepository.findByEmail(email)
+        AppUser user = userRepository.findByProfile_Email(email)
                 .orElseThrow(() -> new AppException("AUTH_011"));
 
         if (user.isEmailVerified()) {
@@ -94,7 +95,7 @@ public class AuthService {
         Otp otp = otpService.generateOtp(user, OtpPurpose.SIGNUP);
 
         otpDeliveryService.sendOtp(
-                user.getEmail(),
+                user.getProfile().getEmail(),
                 otp.getOtpValue(),
                 OtpPurpose.SIGNUP.getExpiryMinutes()
         );
@@ -104,7 +105,7 @@ public class AuthService {
     @Transactional
     public String forgotEmailOtp(String email) {
 
-        AppUser user = userRepository.findByEmail(email)
+        AppUser user = userRepository.findByProfile_Email(email)
                 .orElseThrow(() -> new AppException("AUTH_011"));
 
 
@@ -112,7 +113,7 @@ public class AuthService {
         Otp otp = otpService.generateOtp(user, OtpPurpose.PASSWORD_RESET);
 
         otpDeliveryService.sendOtp(
-                user.getEmail(),
+                user.getProfile().getEmail(),
                 otp.getOtpValue(),
                 OtpPurpose.PASSWORD_RESET.getExpiryMinutes()
         );
@@ -124,7 +125,7 @@ public class AuthService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException("AUTH_006");
         }
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByProfile_Email(request.getEmail())) {
             throw new AppException("AUTH_007");
         }
     }
@@ -132,11 +133,16 @@ public class AuthService {
     public void createUser(RegisterRequestDTO request, Set<Role> userRole) {
         AppUser user = new AppUser();
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRoles(userRole);
         user.setEmailVerified(false);
-        user.setStatus(UserStatus.PENDING);
+
+        UserProfile userProfile=new UserProfile();
+        userProfile.setUser(user);
+        userProfile.setEmail(request.getEmail());
+        userProfile.setStatus(UserStatus.PENDING);
+
+        user.setProfile(userProfile);
 
         String otpValue = OtpUtil.generateOtp();
         Otp otp = new Otp();
