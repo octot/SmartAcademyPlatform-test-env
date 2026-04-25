@@ -176,7 +176,6 @@ public class AuthService {
         String token = jwtService.generateToken(userDetails, requestedRole);
         return new AuthResponse(token, roles, requestedRole);
 
-
     }
 
 

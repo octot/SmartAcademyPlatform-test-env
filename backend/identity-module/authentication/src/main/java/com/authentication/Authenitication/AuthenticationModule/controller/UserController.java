@@ -1,11 +1,9 @@
 package com.authentication.Authenitication.AuthenticationModule.controller;
 
 
-import com.authentication.Authenitication.AuthenticationModule.dto.AboutUserResponse;
-import com.authentication.Authenitication.AuthenticationModule.dto.AuthResponse;
-import com.authentication.Authenitication.AuthenticationModule.dto.EmailChangeRequestDto;
-import com.authentication.Authenitication.AuthenticationModule.dto.SwitchRoleRequest;
+import com.authentication.Authenitication.AuthenticationModule.dto.*;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
+import com.authentication.Authenitication.AuthenticationModule.entity.UserListResponse;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.EmailChangeService;
@@ -91,8 +89,15 @@ public class UserController {
 
     @GetMapping("/getUsers")
     @PreAuthorize("hasAnyAuthority('USER_EDIT_OWN','USER_EDIT_DEPARTMENT','USER_EDIT_GLOBAL')")
-    public List<AppUser> getUsers(Authentication authentication) {
+    public List<UserListResponse> getUsers(Authentication authentication) {
         return userService.getUsers(authentication);
     }
 
+    @PatchMapping("/updateUser/{username}")
+    @PreAuthorize("hasAnyAuthority('USER_EDIT_OWN','USER_EDIT_DEPARTMENT','USER_EDIT_GLOBAL')")
+    public UserResponse updateUser(@PathVariable String username,
+                           @RequestBody UpdateUserRequest  dto,
+                           Authentication auth) {
+       return  userService.updateUser(username, dto, auth);
+    }
 }
