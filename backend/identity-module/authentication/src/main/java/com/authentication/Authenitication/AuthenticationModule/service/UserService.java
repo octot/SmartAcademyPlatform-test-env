@@ -1,7 +1,9 @@
 package com.authentication.Authenitication.AuthenticationModule.service;
 
 
+import com.authentication.Authenitication.AuthenticationModule.dto.AuthUserResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.UpdateUserRequest;
+import com.authentication.Authenitication.AuthenticationModule.dto.UserDto;
 import com.authentication.Authenitication.AuthenticationModule.dto.UserResponse;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.UserListResponse;
@@ -10,8 +12,11 @@ import com.authentication.Authenitication.AuthenticationModule.exception.AppExce
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.Authorization.Enum.Action;
 import com.authentication.Authenitication.Authorization.Enum.Resource;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.Enum.Scope;
+import com.authentication.Authenitication.Authorization.entity.Permission;
 import com.authentication.Authenitication.Authorization.service.PermissionService;
+import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -109,6 +114,31 @@ public class UserService {
         userRepository.save(targetUser);
         return mapToResponse(targetUser);
 
+    }
+
+    public AuthUserResponse getUserWithRolesAndPermissions(String username) {
+
+        AppUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<RoleName> roles = user.getRoles()
+                .stream()
+                .map(Role::getName)
+                .toList();
+
+        List<String> permissions = user.getRoles()
+                .stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .map(Permission::getName)
+                .distinct()
+                .toList();
+
+        return new AuthUserResponse(
+                user.getId(),
+                user.getUsername(),
+                roles,
+                permissions
+        );
     }
 
 }

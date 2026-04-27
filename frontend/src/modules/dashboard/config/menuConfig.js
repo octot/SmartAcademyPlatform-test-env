@@ -5,19 +5,20 @@ const menuItems = [
         path: "/dashboard",
     },
     {
-        label: "Students",
-        path: "/dashboard/students",
-        permission: PERMISSIONS.STUDENT.VIEW,
-    },
-    {
-        label: "Tutors",
-        path: "/dashboard/tutors",
-        permission: PERMISSIONS.TUTOR.VIEW,
+        label: "Users",
+        path: "/dashboard/users",
+        permissions: [
+            PERMISSIONS.USER.VIEW.OWN,
+            PERMISSIONS.USER.VIEW.DEPARTMENT,
+            PERMISSIONS.USER.VIEW.GLOBAL,
+        ],
     },
     {
         label: "Admin Panel",
         path: "/dashboard/admin",
-        permission: PERMISSIONS.ADMIN.ACCESS,
+        permissions: [
+            PERMISSIONS.USER.EDIT.GLOBAL, // or ADMIN-specific later
+        ],
     },
 ];
 

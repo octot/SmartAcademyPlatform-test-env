@@ -10,6 +10,7 @@ import com.authentication.Authenitication.AuthenticationModule.service.EmailChan
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -37,19 +38,16 @@ public class UserController {
     }
 
 
-    @GetMapping("/about")
+    //TODO currently roles and permissions fetched from db but should be fetched from CustomerUserDetails
+    @GetMapping("/me")
     public ResponseEntity<?> aboutUser(Authentication auth) {
-        CustomUserDetails user =
-                (CustomUserDetails) auth.getPrincipal();
-        AboutUserResponse response = new AboutUserResponse(
-                user.getUsername(),
-                user.getEmail(),
-                auth.getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .toList()
-        );
-        return ResponseEntity.ok(response);
+        // ✅ Safety check
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String username = auth.getName();
+        AuthUserResponse user = userService.getUserWithRolesAndPermissions(username);
+        return ResponseEntity.ok(user);
 
     }
 
@@ -96,8 +94,8 @@ public class UserController {
     @PatchMapping("/updateUser/{username}")
     @PreAuthorize("hasAnyAuthority('USER_EDIT_OWN','USER_EDIT_DEPARTMENT','USER_EDIT_GLOBAL')")
     public UserResponse updateUser(@PathVariable String username,
-                           @RequestBody UpdateUserRequest  dto,
-                           Authentication auth) {
-       return  userService.updateUser(username, dto, auth);
+                                   @RequestBody UpdateUserRequest dto,
+                                   Authentication auth) {
+        return userService.updateUser(username, dto, auth);
     }
 }

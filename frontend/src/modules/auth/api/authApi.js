@@ -3,14 +3,18 @@ import api from "../api/client";
 
 //Login
 export const login = async (data) => {
+    const response = await api.post("/auth/login", data);
+    return response.data;
+}
+export const logout = async () => {
+
     try {
-        console.log("CurrentLoginData", data);
-        const response = await api.post("/auth/login", data);
-        return response.data;
-    } catch (error) {
-        console.error("fromLogin", error)
-        throw error;
+        await api.post("/auth/logout");
+        console.log("Triggered!")
+    } catch (err) {
+
     }
+
 }
 
 export const register = async (data) => {
@@ -31,10 +35,10 @@ export const forgotPassword = async (data) => {
         throw error.response?.data || "ForgotPassword failed";
     }
 }
-export const verifyOtp = async ({ login, otp ,purpose}) => {
+export const verifyOtp = async ({ login, otp, purpose }) => {
     try {
-        console.log("verifyOtp",login,otp);
-        const response = await api.post("/auth/verify-otp", { login, otp ,purpose });
+        console.log("verifyOtp", login, otp);
+        const response = await api.post("/auth/verify-otp", { login, otp, purpose });
 
         return response.data;
     } catch (error) {
@@ -48,7 +52,7 @@ export const resentOtp = async ({ login }) => {
         const response = await api.post("/auth/resend-otp", { login });
         console.log("reaching resentOp", response)
 
-        return response.data; 
+        return response.data;
     } catch (error) {
         throw error.response?.data || "Invalid OTP";
     }

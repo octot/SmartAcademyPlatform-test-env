@@ -17,6 +17,8 @@ import com.authentication.Authenitication.AuthenticationModule.service.UserServi
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.entity.Permission;
 import com.authentication.Authenitication.role.Role;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -25,7 +27,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -110,8 +111,6 @@ public class AuthController {
     //    @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
     @PostMapping("/create-admin")
     public ResponseEntity<String> registerAdmin(@RequestBody RegisterRequestDTO request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authvalues " + auth.getAuthorities());
         userService.existsByUsername(request.getUsername());
         authService.registerForAdmin(request);
         return ResponseEntity.ok("User registered successFully");
@@ -141,5 +140,17 @@ public class AuthController {
         return ResponseEntity.ok("Password reset successful");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?>logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("accessToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // use true in production (HTTPS)
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 🔥 delete cookie
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
 
 }

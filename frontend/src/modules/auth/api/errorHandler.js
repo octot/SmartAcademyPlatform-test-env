@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export const ERROR_CODES = {
     USER_NOT_FOUND: "USER_NOT_FOUND",
     INVALID_PASSWORD: "INVALID_PASSWORD",
@@ -7,26 +9,42 @@ export const ERROR_CODES = {
     SERVER_ERROR: "SERVER_ERROR",
 };
 export const handleApiError = (error) => {
+    console.log("Error is",error)
+    if (error.code === "ERR_NETWORK") {
+        return {
+            status: null,
+            code: "CONNECTION_REFUSED",
+            message: "Cannot connect to server. Is backend running?",
+            raw: error,
+        };
+    }
+
+    if (!error.response) {
+        return {
+            status: null,
+            code: "NETWORK_ERROR",
+            message: "Network error. Please check your connection.",
+            raw: error,
+        };
+    }
+
+    console.log(error)
     const status = error.response?.status;
-    const code = error.response?.data?.message;
-    
+    const code = error.response?.data?.errorCode;
+    const backendMessage=error.response.data?.message;
+
     return {
         status,
         code,
-        message: mapErrorMessage(code, status),
+        message:backendMessage || fallbackMessage(status),
         raw: error,
     };
 };
-const mapErrorMessage = (code, status) => {
-    switch (code) {
-        case ERROR_CODES.USER_NOT_FOUND:
-            return "User not found";
-        case ERROR_CODES.INVALID_PASSWORD:
-            return "Invalid credentials";
-        case ERROR_CODES.EMAIL_NOT_VERIFIED:
-            return "Please verify your email";
-        default:
-            if (status === 500) return "Something went wrong";
-            return "Unexpected error";
-    }
+const fallbackMessage = (status) => {
+    if (status === 401) return "Invalid credentials";
+    if (status === 403) return "Access denied";
+    if (status === 400) return "Invalid request";
+    if (status === 500) return "Something went wrong";
+
+    return "Unexpected error";
 };

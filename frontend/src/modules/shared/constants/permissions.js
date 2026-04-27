@@ -1,15 +1,16 @@
 const PERMISSIONS = {
-    STUDENT: {
-        VIEW: "STUDENT_VIEW",
-        EDIT: "STUDENT_EDIT",
-        DELETE: "STUDENT_DELETE",
-    },
-    TUTOR: {
-        VIEW: "TUTOR_VIEW",
-    },
-    ADMIN: {
-        ACCESS: "ADMIN_ACCESS",
-    },
+    USER: {
+        VIEW: {
+            OWN: "USER_VIEW_OWN",
+            DEPARTMENT: "USER_VIEW_DEPARTMENT",
+            GLOBAL: "USER_VIEW_GLOBAL",
+        },
+        EDIT: {
+            OWN: "USER_EDIT_OWN",
+            DEPARTMENT: "USER_EDIT_DEPARTMENT",
+            GLOBAL: "USER_EDIT_GLOBAL",
+        },
+    }
 };
 
 export default PERMISSIONS;
