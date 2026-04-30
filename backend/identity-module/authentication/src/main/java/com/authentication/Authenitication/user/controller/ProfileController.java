@@ -2,6 +2,7 @@ package com.authentication.Authenitication.user.controller;
 
 
 import com.authentication.Authenitication.Tutor.dto.TutorSetupRequest;
+import com.authentication.Authenitication.user.dto.StudentSetupRequest;
 import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,13 @@ public class ProfileController {
 
     @PostMapping("/setup/tutor")
     public ResponseEntity<?> setupProfile(@Valid @RequestBody TutorSetupRequest request) {
-        profileService.setup(request);
+        profileService.setupForTutor(request);
         return ResponseEntity.ok("Tutor Profile setup completed");
+    }
+    @PostMapping("/setup/student")
+    public ResponseEntity<?> setupProfile(@Valid @RequestBody StudentSetupRequest request) {
+        profileService.setupForStudent(request);
+        return ResponseEntity.ok("Student Profile setup completed");
     }
 
 }

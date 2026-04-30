@@ -159,6 +159,10 @@
     "message": "Tutor profile already exist",
     "status": 400
   },
+  "STUDENT_PROFILE_EXIST": {
+    "message": "Student profile already exist",
+    "status": 400
+  },
   "PAYMENT_NOT_FOUND": {
     "message": "Payment Details not found",
     "status": 404
