@@ -21,6 +21,9 @@ public class RoleService {
     public Role getDefaultUserRole() {
         return roleRepository.findByName(RoleName.TUTOR).orElseThrow(() -> new AppException("ROLE_001"));
     }
+    public Role getUserRole(RoleName role) {
+        return roleRepository.findByName(role).orElseThrow(() -> new AppException("ROLE_001"));
+    }
 
     public Role getAdminUserRole() {
         return roleRepository.findByName(RoleName.ADMIN).orElseThrow(() -> new AppException("ROLE_002"));

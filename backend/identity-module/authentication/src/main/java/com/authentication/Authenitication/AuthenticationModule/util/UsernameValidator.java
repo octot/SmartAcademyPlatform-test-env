@@ -27,7 +27,7 @@ public class UsernameValidator {
         }
 
         if (!USERNAME_PATTERN.matcher(username).matches()) {
-            throw new AppException("VAL_003");
+            throw new AppException("VAL_004");
         }
 
 

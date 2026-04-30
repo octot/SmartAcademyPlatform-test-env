@@ -3,6 +3,7 @@ package com.authentication.Authenitication.user.entity;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
+import com.authentication.Authenitication.user.enums.Gender;
 import com.authentication.Authenitication.department.entity.Department;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -37,6 +38,9 @@ public class UserProfile {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private String fullName;
     private String mobile;

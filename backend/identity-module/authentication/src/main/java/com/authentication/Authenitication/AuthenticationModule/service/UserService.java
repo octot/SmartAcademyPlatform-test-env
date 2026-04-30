@@ -3,7 +3,6 @@ package com.authentication.Authenitication.AuthenticationModule.service;
 
 import com.authentication.Authenitication.AuthenticationModule.dto.AuthUserResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.UpdateUserRequest;
-import com.authentication.Authenitication.AuthenticationModule.dto.UserDto;
 import com.authentication.Authenitication.AuthenticationModule.dto.UserResponse;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.UserListResponse;
@@ -14,14 +13,17 @@ import com.authentication.Authenitication.Authorization.Enum.Action;
 import com.authentication.Authenitication.Authorization.Enum.Resource;
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.Enum.Scope;
-import com.authentication.Authenitication.Authorization.entity.Permission;
 import com.authentication.Authenitication.Authorization.service.PermissionService;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
+import com.authentication.Authenitication.user.service.ProfileService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.authentication.Authenitication.AuthenticationModule.dto.UserResponse.mapToResponse;
 import static com.authentication.Authenitication.Utiity.UtilityFunctions.updateIfNotNull;
@@ -31,10 +33,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PermissionService permissionService;
+    private final ProfileService profileService;
 
-    public UserService(UserRepository userRepository, PermissionService permissionService) {
+    public UserService(UserRepository userRepository, PermissionService permissionService, ProfileService profileService) {
         this.userRepository = userRepository;
         this.permissionService = permissionService;
+        this.profileService = profileService;
     }
 
     public AppUser findByUsername(String login) {
@@ -119,25 +123,26 @@ public class UserService {
     public AuthUserResponse getUserWithRolesAndPermissions(String username) {
 
         AppUser user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException("AUTH_011"));
 
-        List<RoleName> roles = user.getRoles()
+        Set<RoleName> roles = user.getRoles()
                 .stream()
                 .map(Role::getName)
-                .toList();
+                .collect(Collectors.toSet());
 
-        List<String> permissions = user.getRoles()
-                .stream()
-                .flatMap(role -> role.getPermissions().stream())
-                .map(Permission::getName)
-                .distinct()
-                .toList();
+        RoleName activeRole = user.getActiveRole();
+
+        Set<String> permissions = permissionService.getPermissionsByRole(user, activeRole);
+
+        Map<RoleName, Boolean> profileCompleted = profileService.getProfileStatus(user);
 
         return new AuthUserResponse(
                 user.getId(),
                 user.getUsername(),
                 roles,
-                permissions
+                activeRole,
+                permissions,
+                profileCompleted
         );
     }
 

@@ -1,55 +1,174 @@
 {
-  "AUTH_001": { "message": "Invalid credentials", "status": 401 },
-  "AUTH_002": { "message": "Please verify your email", "status": 403 },
-  "AUTH_003": { "message": "Account is not active", "status": 403 },
-  "AUTH_004": { "message": "Old password is incorrect", "status": 400 },
-  "AUTH_005": { "message": "New password must be different from old password", "status": 400 },
-  "AUTH_006": { "message": "Username already taken", "status": 400 },
-  "AUTH_007": { "message": "Email already taken", "status": 400 },
-  "AUTH_008": { "message": "Email already verified", "status": 400 },
-  "AUTH_009": { "message": "Invalid OTP", "status": 400 },
-  "AUTH_010": { "message": "OTP expired", "status": 400 },
-  "AUTH_011": { "message": "User not found", "status": 404 },
-  "AUTH_012": { "message": "Invalid OTP, please try again", "status": 400 },
-  "AUTH_013": { "message": "OTP not found", "status": 404 },
-  "AUTH_014": { "message": "OTP limit exceeded", "status": 429 },
-  "AUTH_015": { "message": "Please wait before requesting OTP again", "status": 429 },
-  "AUTH_016": { "message": "Too many requests. Try again later", "status": 429 },
-  "AUTH_017": { "message": "Unsupported OTP purpose", "status": 400 },
-
-  "VAL_001": { "message": "Username cannot be empty", "status": 400 },
-  "VAL_002": { "message": "Username cannot contain @", "status": 400 },
-  "VAL_003": { "message": "Username cannot be an email", "status": 400 },
-  "VAL_004": { "message": "Invalid username format", "status": 400 },
-  "VAL_005": { "message": "Email must be different from current email", "status": 400 },
-  "VAL_006": { "message": "Email already exists", "status": 400 },
-
-  "GEN_001": { "message": "Unexpected internal error", "status": 500 },
-
-  "ROLE_001": { "message": "Access denied", "status": 403 },
-  "ROLE_002": { "message": "Admin role not found", "status": 404 },
-  "ROLE_003": { "message": "No roles assigned to user", "status": 403 },
-  "ROLE_004": { "message": "Invalid role switch", "status": 400 },
-  "ROLE_005": { "message": "Invalid role", "status": 400 },
-
-  "PERMISSION_001": { "message": "Permissions not found", "status": 404 },
-  "PERMISSION_002": { "message": "No permissions available", "status": 403 },
-
-  "EMAIL_001": { "message": "Request not found", "status": 404 },
-  "EMAIL_002": { "message": "Request expired", "status": 400 },
-
+  "AUTH_001": {
+    "message": "Invalid credentials",
+    "status": 401
+  },
+  "AUTH_002": {
+    "message": "Please verify your email",
+    "status": 403
+  },
+  "AUTH_003": {
+    "message": "Account is not active",
+    "status": 403
+  },
+  "AUTH_004": {
+    "message": "Old password is incorrect",
+    "status": 400
+  },
+  "AUTH_005": {
+    "message": "New password must be different from old password",
+    "status": 400
+  },
+  "AUTH_006": {
+    "message": "Username already taken",
+    "status": 400
+  },
+  "AUTH_007": {
+    "message": "Email already taken",
+    "status": 400
+  },
+  "AUTH_008": {
+    "message": "Email already verified",
+    "status": 400
+  },
+  "AUTH_009": {
+    "message": "Invalid OTP",
+    "status": 400
+  },
+  "AUTH_010": {
+    "message": "OTP expired",
+    "status": 400
+  },
+  "AUTH_011": {
+    "message": "User not found",
+    "status": 404
+  },
+  "AUTH_012": {
+    "message": "Invalid OTP, please try again",
+    "status": 400
+  },
+  "AUTH_013": {
+    "message": "OTP not found",
+    "status": 404
+  },
+  "AUTH_014": {
+    "message": "OTP limit exceeded",
+    "status": 429
+  },
+  "AUTH_015": {
+    "message": "Please wait before requesting OTP again",
+    "status": 429
+  },
+  "AUTH_016": {
+    "message": "Too many requests. Try again later",
+    "status": 429
+  },
+  "AUTH_017": {
+    "message": "Unsupported OTP purpose",
+    "status": 400
+  },
+  "AUTH_018": {
+    "message": "User not authenticated",
+    "status": 401
+  },
+  "VAL_001": {
+    "message": "Username cannot be empty",
+    "status": 400
+  },
+  "VAL_002": {
+    "message": "Username cannot contain @",
+    "status": 400
+  },
+  "VAL_003": {
+    "message": "Username cannot be an email",
+    "status": 400
+  },
+  "VAL_004": {
+    "message": "Invalid username format",
+    "status": 400
+  },
+  "VAL_005": {
+    "message": "Email must be different from current email",
+    "status": 400
+  },
+  "VAL_006": {
+    "message": "Email already exists",
+    "status": 400
+  },
+  "GEN_001": {
+    "message": "Unexpected internal error",
+    "status": 500
+  },
+  "ROLE_001": {
+    "message": "Access denied",
+    "status": 403
+  },
+  "ROLE_002": {
+    "message": "Admin role not found",
+    "status": 404
+  },
+  "ROLE_003": {
+    "message": "No roles assigned to user",
+    "status": 403
+  },
+  "ROLE_004": {
+    "message": "Invalid role switch",
+    "status": 400
+  },
+  "ROLE_005": {
+    "message": "Invalid role",
+    "status": 400
+  },
+  "PERMISSION_001": {
+    "message": "Permissions not found",
+    "status": 404
+  },
+  "PERMISSION_002": {
+    "message": "No permissions available",
+    "status": 403
+  },
+  "EMAIL_001": {
+    "message": "Request not found",
+    "status": 404
+  },
+  "EMAIL_002": {
+    "message": "Request expired",
+    "status": 400
+  },
   "AUTH_VALIDATOR_NOT_FOUND": {
     "message": "No validator configured for this resource",
     "status": 500
   },
-
-  "AUTH_403": { "message": "Permission denied", "status": 403 },
-  "AUTH_INVALID_PERMISSION": { "message": "Invalid permission", "status": 403 },
-
+  "AUTH_403": {
+    "message": "Permission denied",
+    "status": 403
+  },
+  "AUTH_INVALID_PERMISSION": {
+    "message": "Invalid permission",
+    "status": 403
+  },
   "RESOURCE_REQUIRED": {
     "message": "Resource ID is required for this action",
     "status": 400
   },
-
-  "USER_01": { "message": "User profile not found", "status": 404 }
+  "USER_01": {
+    "message": "User profile not found",
+    "status": 404
+  },
+  "TUTOR_PROFILE_EXIST": {
+    "message": "Tutor profile already exist",
+    "status": 400
+  },
+  "PAYMENT_NOT_FOUND": {
+    "message": "Payment Details not found",
+    "status": 404
+  },
+  "GPAY_NUMBER_REQUIRED": {
+    "message": "GPay number required",
+    "status": 400
+  },
+  "BANK_DETAILS_INCOMPLETE": {
+    "message": "Bank details incomplete",
+    "status": 400
+  }
 }

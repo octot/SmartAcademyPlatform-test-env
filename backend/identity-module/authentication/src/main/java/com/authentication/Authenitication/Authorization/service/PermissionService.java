@@ -5,10 +5,14 @@ import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.Authorization.Enum.Action;
 import com.authentication.Authenitication.Authorization.Enum.Resource;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.Enum.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PermissionService {
@@ -68,5 +72,12 @@ public class PermissionService {
         throw new AppException("PERMISSION_001");
     }
 
+
+    public Set<String> getPermissionsByRole(AppUser user, RoleName activeRole) {
+
+        return user.getRoles().stream().filter(role -> role.getName() == activeRole).findFirst()
+                .orElseThrow(() -> new AppException("ROLE_003")).getPermissions().stream().map(permission -> permission.getName()
+                ).collect(Collectors.toSet());
+    }
 
 }

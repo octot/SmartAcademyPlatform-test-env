@@ -2,6 +2,7 @@ import "./RegisterForm.css"
 import { useState } from "react";
 import { register } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import ROLES from "../../shared/constants/roles"
 export default function RegisterForm() {
 
     const navigate = useNavigate();
@@ -10,7 +11,8 @@ export default function RegisterForm() {
         ({
             username: "",
             email: "",
-            password: ""
+            password: "",
+            role: ROLES.STUDENT
         })
     const handleChange = (e) => {
         setForm(
@@ -24,7 +26,7 @@ export default function RegisterForm() {
         try {
             await register(form);
             alert("Registered succesfully")
-            navigate("/verify-email", { state: { email: form.email } });
+            navigate("/verify-email", { state: { login: form.email ,triggerOtp:true} });
         }
         catch (err) {
             console.error(err);
@@ -45,7 +47,25 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     className="input-field"
                 />
-
+                <label>
+                    <input
+                        type="radio"
+                        value={ROLES.STUDENT}
+                        checked={form.role === ROLES.STUDENT}
+                        onChange={handleChange}
+                    />
+                    Student
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value={ROLES.TUTOR}
+                        checked={form.role === ROLES.TUTOR}
+                        onChange={handleChange}
+                    />
+                    Tutor
+                </label>
+                <br />
                 <button type="submit" className="register-btn">
                     Sign Up →
                 </button>

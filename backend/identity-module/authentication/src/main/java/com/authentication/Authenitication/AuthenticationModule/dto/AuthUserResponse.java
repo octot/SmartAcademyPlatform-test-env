@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -12,6 +14,11 @@ import java.util.UUID;
 public class AuthUserResponse {
     private UUID id;
     private String username;
-    private List<RoleName> roles;
-    private List<String> permissions;
+
+    private Set<RoleName> roles;
+    private RoleName activeRole;
+    private Set<String> permissions;
+
+    private Map<RoleName, Boolean> profileCompleted;
+
 }

@@ -65,7 +65,8 @@ public class AuthController {
         if (currentRoles.isEmpty()) {
             throw new AppException("ROLE_003");
         }
-        String activeRole = currentRoles.getFirst();
+
+        String activeRole = user.getUser().getActiveRole().name();
         String token = jwtService.generateToken(user, activeRole);
 
         AppUser userDetails = userService.findByUsername(request.getLogin());
@@ -141,7 +142,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?>logout(HttpServletResponse response){
+    public ResponseEntity<?> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("accessToken", null);
         cookie.setHttpOnly(true);
         cookie.setSecure(true); // use true in production (HTTPS)

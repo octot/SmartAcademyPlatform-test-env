@@ -2,21 +2,19 @@ package com.authentication.Authenitication.AuthenticationModule.controller;
 
 
 import com.authentication.Authenitication.AuthenticationModule.dto.*;
-import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.UserListResponse;
+import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.EmailChangeService;
-import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
+import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +28,7 @@ public class UserController {
     private final EmailChangeService emailChangeService;
     private final AuthService authService;
     private final UserService userService;
+
 
     public UserController(EmailChangeService emailChangeService, AuthService authService, UserService userService) {
         this.emailChangeService = emailChangeService;

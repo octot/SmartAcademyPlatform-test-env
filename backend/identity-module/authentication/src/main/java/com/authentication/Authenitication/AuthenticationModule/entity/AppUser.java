@@ -1,5 +1,6 @@
 package com.authentication.Authenitication.AuthenticationModule.entity;
 
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.department.entity.Department;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,7 +31,6 @@ public class AppUser {
 
     @Column(nullable = false)
     private String password;
-
 
 
     @Column(nullable = false)
@@ -53,4 +54,9 @@ public class AppUser {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile profile;
+
+    @Enumerated(EnumType.STRING)
+    private RoleName activeRole;
+    @Transient
+    private Map<RoleName, Boolean> profileCompleted;
 }

@@ -130,40 +130,31 @@ public class AuthService {
         }
     }
 
-    public void createUser(RegisterRequestDTO request, Set<Role> userRole) {
+    public void createUser(RegisterRequestDTO request) {
         AppUser user = new AppUser();
+        Set<Role> userRole = Set.of(roleService.getUserRole(request.getRole()));
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRoles(userRole);
         user.setEmailVerified(false);
-
-        UserProfile userProfile=new UserProfile();
+        user.setActiveRole(request.getRole());
+        UserProfile userProfile = new UserProfile();
         userProfile.setUser(user);
         userProfile.setEmail(request.getEmail());
         userProfile.setStatus(UserStatus.PENDING);
-
         user.setProfile(userProfile);
-
-        String otpValue = OtpUtil.generateOtp();
-        Otp otp = new Otp();
-        otp.setUser(user);
-        otp.setOtpValue(otpValue);
-        otp.setPurpose(OtpPurpose.SIGNUP);
-        otp.setExpiryTime(Instant.now().plus(5, ChronoUnit.MINUTES));
-        otp.setAttemptCount(0);
-        otp.setMaxAttempts(3);
-        otp.setUsed(false);
         userRepository.save(user);
     }
 
     public void register(RegisterRequestDTO request) {
         checkUserNameAndEmailExist(request);
-        createUser(request, Set.of(roleService.getDefaultUserRole()));
+        createUser(request);
     }
 
+    //TODO need to handle role for admin
     public void registerForAdmin(RegisterRequestDTO request) {
         checkUserNameAndEmailExist(request);
-        createUser(request, Set.of(roleService.getAdminUserRole()));
+        createUser(request);
     }
 
     public AuthResponse switchRole(CustomUserDetails userDetails, String requestedRole) {

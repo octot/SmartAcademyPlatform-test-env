@@ -19,6 +19,7 @@ export default function VerifyEmailForm() {
     // 🚨 Redirect if accessed directly
     useEffect(() => {
         if (!login) {
+            
             navigate("/login");
         }
     }, [login, navigate]);
