@@ -4,7 +4,9 @@ package com.authentication.Authenitication.user.controller;
 import com.authentication.Authenitication.Tutor.dto.TutorProfileResponse;
 import com.authentication.Authenitication.Tutor.dto.TutorSetupRequest;
 import com.authentication.Authenitication.Tutor.dto.TutorUpdateRequest;
+import com.authentication.Authenitication.user.dto.StudentProfileResponse;
 import com.authentication.Authenitication.user.dto.StudentSetupRequest;
+import com.authentication.Authenitication.user.dto.StudentUpdateRequest;
 import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +40,21 @@ public class ProfileController {
     }
 
     @PutMapping("/tutor")
-    public ResponseEntity<?> updateTutorProfile(@Valid @RequestBody TutorUpdateRequest request) {
-        profileService.updateTutorProfile(request);
-        return ResponseEntity.ok("Tutor Profile updated !");
+    public ResponseEntity<TutorProfileResponse> updateTutorProfile(@Valid @RequestBody TutorUpdateRequest request) {
+        TutorProfileResponse response=profileService.updateTutorProfile(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/student")
+    public ResponseEntity<StudentProfileResponse> getStudentProfile() {
+        return ResponseEntity.ok(profileService.getStudentProfile());
+    }
+
+    @PutMapping("/student")
+    public ResponseEntity<StudentProfileResponse> updateStudentProfile(
+            @Valid @RequestBody StudentUpdateRequest request) {
+        StudentProfileResponse response = profileService.updateStudentProfile(request);
+        return ResponseEntity.ok(response);
 
     }
 

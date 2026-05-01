@@ -17,7 +17,9 @@ import com.authentication.Authenitication.Tutor.entity.TutorProfile;
 import com.authentication.Authenitication.Tutor.repository.TutorProfileRepository;
 import com.authentication.Authenitication.payment.repository.PaymentRepository;
 import com.authentication.Authenitication.role.Role;
+import com.authentication.Authenitication.user.dto.StudentProfileResponse;
 import com.authentication.Authenitication.user.dto.StudentSetupRequest;
+import com.authentication.Authenitication.user.dto.StudentUpdateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -214,7 +216,7 @@ public class ProfileService {
         return dto;
     }
 
-    public void updateTutorProfile(TutorUpdateRequest request) {
+    public TutorProfileResponse updateTutorProfile(TutorUpdateRequest request) {
 
         AppUser currentUser = securityUtils.getCurrentUser();
 
@@ -241,10 +243,12 @@ public class ProfileService {
 
         tutorProfileRepo.save(profile);
 
-        updatePayment(profile, request.getPayment());
+        TutorPaymentDetails payment = updatePayment(profile, request.getPayment());
+
+        return mapToResponse(profile, payment);
     }
 
-    private void updatePayment(TutorProfile profile, PaymentDetails payment) {
+    private TutorPaymentDetails updatePayment(TutorProfile profile, PaymentDetails payment) {
 
         TutorPaymentDetails entity =
                 paymentRepository.findByTutorId(profile.getUser().getId()).orElseThrow(() -> new AppException("TUTOR_PROFILE_PAYMENT_DETAILS_NOT_FOUND"));
@@ -263,7 +267,46 @@ public class ProfileService {
         entity.setAccountNumber(payment.getAccountNumber());
         entity.setIfscCode(payment.getIfscCode());
 
-        paymentRepository.save(entity);
+        return paymentRepository.save(entity);
+
     }
 
+    public StudentProfileResponse getStudentProfile() {
+
+        AppUser currentUser = securityUtils.getCurrentUser();
+
+        AppUser user = userRepository.findById(currentUser.getId())
+                .orElseThrow();
+
+        StudentProfile profile = studentProfileRepo.findByUserId(user.getId())
+                .orElseThrow(() -> new AppException("STUDENT_PROFILE_NOT_FOUND"));
+
+        StudentProfileResponse res = new StudentProfileResponse();
+        res.setStudentClass(profile.getStudentClass());
+        res.setSyllabus(profile.getSyllabus());
+
+        return res;
+    }
+
+    public StudentProfileResponse updateStudentProfile(StudentUpdateRequest request) {
+
+        AppUser currentUser = securityUtils.getCurrentUser();
+
+        AppUser user = userRepository.findById(currentUser.getId())
+                .orElseThrow();
+
+        StudentProfile profile = studentProfileRepo.findByUserId(user.getId())
+                .orElseThrow(() -> new AppException("STUDENT_PROFILE_NOT_FOUND"));
+
+        profile.setStudentClass(request.getStudentClass());
+        profile.setSyllabus(request.getSyllabus());
+
+        studentProfileRepo.save(profile);
+
+        StudentProfileResponse res = new StudentProfileResponse();
+        res.setStudentClass(profile.getStudentClass());
+        res.setSyllabus(profile.getSyllabus());
+
+        return res;
+    }
 }
