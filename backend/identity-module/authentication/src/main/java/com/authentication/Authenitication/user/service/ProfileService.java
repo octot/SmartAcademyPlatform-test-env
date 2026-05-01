@@ -9,15 +9,15 @@ import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Student.entity.StudentProfile;
 import com.authentication.Authenitication.Student.repository.StudentProfileRepository;
 import com.authentication.Authenitication.Tutor.dto.PaymentDetails;
+import com.authentication.Authenitication.Tutor.dto.TutorProfileResponse;
 import com.authentication.Authenitication.Tutor.dto.TutorSetupRequest;
+import com.authentication.Authenitication.Tutor.dto.TutorUpdateRequest;
 import com.authentication.Authenitication.Tutor.entity.TutorPaymentDetails;
 import com.authentication.Authenitication.Tutor.entity.TutorProfile;
 import com.authentication.Authenitication.Tutor.repository.TutorProfileRepository;
 import com.authentication.Authenitication.payment.repository.PaymentRepository;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.dto.StudentSetupRequest;
-import jakarta.annotation.Nonnull;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public class ProfileService {
     }
 
     private StudentProfile buildStudentProfile(StudentSetupRequest request, AppUser user) {
-        StudentProfile  studentProfile=new StudentProfile();
+        StudentProfile studentProfile = new StudentProfile();
         studentProfile.setUser(user);
         studentProfile.setStudentClass(request.getStudentClass());
         studentProfile.setSyllabus(request.getSyllabus());
@@ -153,6 +153,117 @@ public class ProfileService {
         entity.setIfscCode(payment.getIfscCode());
 
         return entity;
+    }
+
+    public TutorProfileResponse getTutorProfile() {
+
+        AppUser currentUser = securityUtils.getCurrentUser();
+
+        AppUser user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new AppException("AUTH_011"));
+
+        TutorProfile profile = tutorProfileRepo.findById(user.getId())
+                .orElseThrow(() -> new AppException("TUTOR_PROFILE_NOT_FOUND"));
+
+        TutorPaymentDetails payment = paymentRepository.findByTutorId(profile.getUser().getId()).orElseThrow(() -> new AppException("TUTOR_PROFILE_PAYMENT_DETAILS_NOT_FOUND"));
+
+
+        return mapToResponse(profile, payment);
+    }
+
+    private TutorProfileResponse mapToResponse(
+            TutorProfile profile,
+            TutorPaymentDetails payment) {
+
+        TutorProfileResponse res = new TutorProfileResponse();
+
+        res.setAadhaarNumber(profile.getAadhaarNumber());
+        res.setHasVehicle(profile.getHasVehicle());
+        res.setVehicleType(profile.getVehicleType());
+
+        res.setQualification(profile.getQualification());
+        res.setExperienceYears(profile.getExperienceYears());
+
+        res.setSubjects(profile.getSubjects());
+        res.setClassesHandled(profile.getClassesHandled());
+        res.setSyllabusHandled(profile.getSyllabusHandled());
+
+        res.setPreferredLocations(profile.getPreferredLocations());
+        res.setRemarks(profile.getRemarks());
+
+        res.setPayment(mapPayment(payment));
+
+        return res;
+    }
+
+    private PaymentDetails mapPayment(TutorPaymentDetails entity) {
+
+        if (entity == null) return null;
+
+        PaymentDetails dto = new PaymentDetails();
+
+        dto.setPaymentMethod(entity.getPaymentMethod());
+        dto.setGpayNumber(entity.getGpayNumber());
+
+        dto.setAccountHolderName(entity.getAccountHolderName());
+        dto.setBankName(entity.getBankName());
+        dto.setBranchName(entity.getBranchName());
+        dto.setAccountNumber(entity.getAccountNumber());
+        dto.setIfscCode(entity.getIfscCode());
+
+        return dto;
+    }
+
+    public void updateTutorProfile(TutorUpdateRequest request) {
+
+        AppUser currentUser = securityUtils.getCurrentUser();
+
+        AppUser user = userRepository.findById(currentUser.getId())
+                .orElseThrow();
+
+
+        TutorProfile profile = tutorProfileRepo.findById(user.getId())
+                .orElseThrow(() -> new AppException("TUTOR_PROFILE_NOT_FOUND"));
+
+        // update fields
+        profile.setHasVehicle(request.getHasVehicle());
+        profile.setVehicleType(request.getVehicleType());
+
+        profile.setQualification(request.getQualification());
+        profile.setExperienceYears(request.getExperienceYears());
+
+        profile.setSubjects(request.getSubjects());
+        profile.setClassesHandled(request.getClassesHandled());
+        profile.setSyllabusHandled(request.getSyllabusHandled());
+
+        profile.setPreferredLocations(request.getPreferredLocations());
+        profile.setRemarks(request.getRemarks());
+
+        tutorProfileRepo.save(profile);
+
+        updatePayment(profile, request.getPayment());
+    }
+
+    private void updatePayment(TutorProfile profile, PaymentDetails payment) {
+
+        TutorPaymentDetails entity =
+                paymentRepository.findByTutorId(profile.getUser().getId()).orElseThrow(() -> new AppException("TUTOR_PROFILE_PAYMENT_DETAILS_NOT_FOUND"));
+
+        if (entity == null) {
+            entity = new TutorPaymentDetails();
+            entity.setTutor(profile);
+        }
+
+        entity.setPaymentMethod(payment.getPaymentMethod());
+        entity.setGpayNumber(payment.getGpayNumber());
+
+        entity.setAccountHolderName(payment.getAccountHolderName());
+        entity.setBankName(payment.getBankName());
+        entity.setBranchName(payment.getBranchName());
+        entity.setAccountNumber(payment.getAccountNumber());
+        entity.setIfscCode(payment.getIfscCode());
+
+        paymentRepository.save(entity);
     }
 
 }
