@@ -1,28 +1,31 @@
 package com.authentication.Authenitication.AuthenticationModule.service;
 
 
-import com.authentication.Authenitication.AuthenticationModule.dto.AuthResponse;
+import com.authentication.Authenitication.AuthenticationModule.dto.AuthUserResponse;
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
 import com.authentication.Authenitication.AuthenticationModule.otp.*;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
-import com.authentication.Authenitication.AuthenticationModule.security.JwtService;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
+import com.authentication.Authenitication.Authorization.service.PermissionService;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.util.UsernameValidator;
 import com.authentication.Authenitication.user.entity.UserProfile;
+import com.authentication.Authenitication.user.mapper.UserResponseBuilder;
+import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -33,16 +36,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final TokenService tokenService;
-    private final JwtService jwtService;
-
-    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, JwtService jwtService) {
+    private final UserResponseBuilder userResponseBuilder;
+    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, UserResponseBuilder userResponseBuilder) {
         this.userRepository = userRepository;
         this.otpService = otpService;
         this.otpDeliveryService = otpDeliveryService;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
         this.tokenService = tokenService;
-        this.jwtService = jwtService;
+        this.userResponseBuilder = userResponseBuilder;
     }
 
     public VerifyOtpResponse verifyEmailOtp(VerifyOtpRequestDTO request) {
@@ -157,15 +159,22 @@ public class AuthService {
         createUser(request);
     }
 
-    public AuthResponse switchRole(CustomUserDetails userDetails, String requestedRole) {
+    public AuthUserResponse switchRole(CustomUserDetails userDetails, String requestedRole) {
 
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
         // 🔥 VALIDATION
         if (!roles.contains(requestedRole)) {
             throw new AppException("ROLE_004");
         }
-        String token = jwtService.generateToken(userDetails, requestedRole);
-        return new AuthResponse(token, roles, requestedRole);
+        AppUser user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new AppException("USER_NOT_FOUND"));
+
+
+        // 🔥 Step 3: update DB (IMPORTANT)
+        user.setActiveRole(RoleName.valueOf(requestedRole));
+        userRepository.save(user);
+
+        return userResponseBuilder.buildUserResponse(user);
 
     }
 

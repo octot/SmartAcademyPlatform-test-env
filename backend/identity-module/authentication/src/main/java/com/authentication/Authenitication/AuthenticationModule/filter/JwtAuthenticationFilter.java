@@ -7,6 +7,8 @@ import com.authentication.Authenitication.AuthenticationModule.security.JwtServi
 import com.authentication.Authenitication.AuthenticationModule.service.SecurityUserDetailsService;
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import com.authentication.Authenitication.role.Role;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,9 +85,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
             }
-        } catch (Exception ex) {
+        } catch (ExpiredJwtException | MalformedJwtException ex) {
             SecurityContextHolder.clearContext();
-
         }
         //Creation logic for request id
         String requestId = request.getHeader("X-Request-Id");

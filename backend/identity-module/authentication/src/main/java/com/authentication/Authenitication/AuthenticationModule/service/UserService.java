@@ -9,13 +9,16 @@ import com.authentication.Authenitication.AuthenticationModule.entity.UserListRe
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
+import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.Authorization.Enum.Action;
 import com.authentication.Authenitication.Authorization.Enum.Resource;
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.Enum.Scope;
+import com.authentication.Authenitication.Authorization.repository.RoleRepository;
 import com.authentication.Authenitication.Authorization.service.PermissionService;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
+import com.authentication.Authenitication.user.mapper.UserResponseBuilder;
 import com.authentication.Authenitication.user.service.ProfileService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -34,11 +37,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final PermissionService permissionService;
     private final ProfileService profileService;
+    private final RoleRepository roleRepository;
+    private final UserResponseBuilder userResponseBuilder;
 
-    public UserService(UserRepository userRepository, PermissionService permissionService, ProfileService profileService) {
+    public UserService(UserRepository userRepository, PermissionService permissionService, ProfileService profileService, RoleRepository roleRepository, UserResponseBuilder userResponseBuilder) {
         this.userRepository = userRepository;
         this.permissionService = permissionService;
         this.profileService = profileService;
+        this.roleRepository = roleRepository;
+        this.userResponseBuilder = userResponseBuilder;
     }
 
     public AppUser findByUsername(String login) {
@@ -144,6 +151,23 @@ public class UserService {
                 permissions,
                 profileCompleted
         );
+    }
+
+    public AuthUserResponse addRole(CustomUserDetails userDetails, RoleName newRole) {
+        AppUser user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new AppException("USER_NOT_FOUND"));
+        boolean roleAlreadyExist = user.getRoles().stream().anyMatch(r -> r.getName() == newRole);
+        if (roleAlreadyExist) {
+            throw new AppException("ROLE_005"); // already assigned
+        }
+        // 🔥 Fetch role entity
+        Role role = roleRepository.findByName(newRole)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        user.getRoles().add(role);
+        userRepository.save(user);
+
+        return userResponseBuilder.buildUserResponse(user);
     }
 
 }

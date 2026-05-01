@@ -76,11 +76,11 @@ public class UserController {
     }
 
     @PostMapping("/switch-role")
-    public ResponseEntity<AuthResponse> switchRole(
+    public ResponseEntity<AuthUserResponse> switchRole(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody SwitchRoleRequest request
     ) {
-        AuthResponse response = authService.switchRole(userDetails, request.getRole());
+        AuthUserResponse response = authService.switchRole(userDetails, request.getRole());
         return ResponseEntity.ok(response);
     }
 
@@ -96,5 +96,16 @@ public class UserController {
                                    @RequestBody UpdateUserRequest dto,
                                    Authentication auth) {
         return userService.updateUser(username, dto, auth);
+    }
+
+    @PostMapping("/add-role")
+    public ResponseEntity<AuthUserResponse> addRole(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody AddRoleRequest request) {
+
+        AuthUserResponse response =
+                userService.addRole(userDetails, request.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }
