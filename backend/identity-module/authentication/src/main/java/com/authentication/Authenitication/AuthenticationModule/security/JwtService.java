@@ -1,19 +1,15 @@
 package com.authentication.Authenitication.AuthenticationModule.security;
 
 
-import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
-import com.authentication.Authenitication.Authorization.entity.Permission;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -33,32 +29,12 @@ public class JwtService {
     // ⏱ Token valid for 15 minutes
     private static final long EXPIRATION_TIME = 900000;
 
-    public String generateToken(CustomUserDetails userDetails, String activeRole) {
-        List<String> roles = userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-        if (roles.isEmpty()) {
-            throw new AppException("ROLE_003");
-        }
-        List<String> permissions = userDetails.getUser()
-                .getRoles()
-                .stream()
-                .flatMap(role -> role.getPermissions().stream())
-                .map(Permission::getName)
-                .distinct()
-                .toList();
-        if (permissions.isEmpty()) {
-            throw new AppException("PERMISSION_002");
-        }
+    public String generateToken(CustomUserDetails userDetails) {
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("userId", userDetails.getId())
-                //Used to invalid token on changes like password
                 .claim("tokenVersion", userDetails.getTokenVersion())
-                .claim("roles", roles)
-                .claim("activeRole", activeRole)
-                .claim("permissions", permissions)
                 .setIssuedAt(new Date())
                 .setExpiration(
                         new Date(System.currentTimeMillis() + EXPIRATION_TIME)
@@ -84,9 +60,6 @@ public class JwtService {
         );
     }
 
-    public String extractActiveRole(String token) {
-        return extractClaim(token, claims -> claims.get("activeRole", String.class));
-    }
 
     public boolean isSignatureValid(String token) {
         try {

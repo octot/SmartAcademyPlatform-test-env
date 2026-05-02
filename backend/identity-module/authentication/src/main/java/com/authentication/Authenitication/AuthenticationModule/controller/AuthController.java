@@ -67,7 +67,7 @@ public class AuthController {
         }
 
         String activeRole = user.getUser().getActiveRole().name();
-        String token = jwtService.generateToken(user, activeRole);
+        String token = jwtService.generateToken(user);
 
         AppUser userDetails = userService.findByUsername(request.getLogin());
         UserDto userDto = new UserDto(userDetails.getId(), userDetails.getUsername());

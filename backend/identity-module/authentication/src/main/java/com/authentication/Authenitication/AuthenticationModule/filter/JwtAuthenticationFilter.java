@@ -24,6 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.security.SignatureException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -52,20 +53,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (token != null && jwtService.isTokenValid(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 String username = jwtService.extractUserName(token);
+                AppUser user = userService.findByUsername(username);
                 CustomUserDetails userDetails =
-                        userDetailsService.loadUserByUsername(username);
+                        new CustomUserDetails(user);
+
                 Integer tokenVersion = jwtService.extractTokenVersion(token);
 
-                AppUser user = userService.findByUsername(username);
-
-                String activeRole = jwtService.extractActiveRole(token);
-
-                Role activeRoleEntity = userDetails.getUser()
-                        .getRoles()
+                Optional<Role> roleOpt = user.getRoles()
                         .stream()
-                        .filter(role -> role.getName().name().equals(activeRole))
-                        .findFirst()
-                        .orElseThrow();
+                        .filter(role -> role.getName() == user.getActiveRole())
+                        .findFirst();
+
+                if (roleOpt.isEmpty()) {
+                    SecurityContextHolder.clearContext();
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                Role activeRoleEntity = roleOpt.get();
 
 //               Authorities = ["USER_VIEW", "USER_APPROVE"]
                 List<SimpleGrantedAuthority> authorities =
@@ -106,7 +110,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.equals("/auth/verify-otp") ||
                 path.equals("/auth/resend-otp") ||
                 path.equals("/auth/forgot-password") ||
-                path.equals("/auth/reset-password") ;
+                path.equals("/auth/reset-password");
     }
 
 
