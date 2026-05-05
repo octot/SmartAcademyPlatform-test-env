@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./LoginForm.css"
-import { useAuth } from "../../shared/context/AuthContext";
+import { useAuth } from "../../../core/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
     const { loginAuth } = useAuth();

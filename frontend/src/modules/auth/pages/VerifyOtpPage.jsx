@@ -1,4 +1,4 @@
-import AuthLayout from "../../layouts/AuthLayout"
+import AuthLayout from "../../../layouts/AuthLayout"
 import VerifyOtpForm from "../components/VerifyOtpForm"
 
 export default function VerifyOtpPage() {

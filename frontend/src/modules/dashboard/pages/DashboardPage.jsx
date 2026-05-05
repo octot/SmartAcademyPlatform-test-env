@@ -1,4 +1,4 @@
-import { useAuth } from "../../shared/context/AuthContext";
+import { useAuth } from "../../../core/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 export default function DashboardPage() {
     const { auth, hasPermission, loggingout } = useAuth();
@@ -10,11 +10,8 @@ export default function DashboardPage() {
     }
     return (
         <div>
-            <h1>Welcome {auth.user?.name}</h1>
-
-            {hasPermission("ADMIN_CREATE_GLOBAL") && (
-                <button>Create User</button>
-            )}
+            <h1>Welcome {auth.user}</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, placeat? Porro adipisci molestias aliquam labore dicta maxime et doloribus praesentium!</p>
 
         </div>
     )

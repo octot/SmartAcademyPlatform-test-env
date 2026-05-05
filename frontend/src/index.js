@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {AuthProvider} from '../src/modules/shared/context/AuthContext'
+import {AuthProvider} from './core/auth/AuthContext'
 ReactDOM.createRoot(document.getElementById("root")).render(
 
   <AuthProvider>

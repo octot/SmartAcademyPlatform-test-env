@@ -1,5 +1,5 @@
 // modules/auth/api/authApi.js
-import api from "../api/client";
+import api from "../../../core/api/client";
 
 //Login
 export const login = async (data) => {
