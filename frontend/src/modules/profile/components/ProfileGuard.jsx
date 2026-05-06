@@ -5,6 +5,7 @@ const ProfileGuard = ({ children }) => {
   const { activeRole, profileCompleted } = useAuth();
 
   const isCompleted = profileCompleted?.[activeRole];
+  console.log("profileCompleted",profileCompleted)
 
   if (!isCompleted) {
     return <Navigate to="/setup-profile" replace />;

@@ -7,7 +7,6 @@ export const login = async (data) => {
     return response.data;
 }
 export const logout = async () => {
-
     try {
         await api.post("/auth/logout");
         console.log("Triggered!")
