@@ -6,7 +6,6 @@ export default function Topbar() {
     return (
         <div className="topbar">
             <span>Hi , {auth?.user}</span>
-l̥
             <button onClick={loggingout}>Logout</button>
         </div>
     )
