@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../core/api/client";
 import { toast } from "react-toastify";
 
-const TutorProfileForm = () => {
+const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
     const navigate = useNavigate();
     const { refreshUser } = useAuth();
     const [locationInput, setLocationInput] = useState("");
@@ -29,7 +29,8 @@ const TutorProfileForm = () => {
             branchName: "",
             accountNumber: "",
             ifscCode: ""
-        }
+        },
+         ...initialData
     });
 
     const [submitting, setSubmitting] = useState(false);

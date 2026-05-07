@@ -5,12 +5,13 @@ import api from "../../../core/api/client";
 
 import { toast } from "react-toastify";
 
-const StudentProfileForm = () => {
+const StudentProfileForm = ({ initialData = {}, onSuccess }) => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         studentClass: "",
-        syllabus: ""
+        syllabus: "",
+         ...initialData
     });
 
     const [submitting, setSubmitting] = useState(false);

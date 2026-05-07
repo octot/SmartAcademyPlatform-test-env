@@ -61,7 +61,7 @@ public class ProfileService {
     public void setupForStudent(StudentSetupRequest request) {
         AppUser currentUser = securityUtils.getCurrentUser();
 
-        if (tutorProfileRepo.existsByUser(currentUser)) {
+        if (studentProfileRepo.existsByUser(currentUser)) {
             throw new AppException("STUDENT_PROFILE_EXIST");
         }
         AppUser user = userRepository.findById(currentUser.getId())

@@ -3,7 +3,7 @@ import { login as loginApi } from "../../modules/auth/api/authApi";
 import { logout } from "../../modules/auth/api/authApi";
 import { getMe } from "../api/userApi";
 import { toast } from "react-toastify";
-
+import { switchRole as switchRoleApi } from "../api/userApi";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     const loggingout = async () => {
         try {
             await logout();
-            
+
             setAuth({
                 user: null,
                 roles: [],
@@ -95,11 +95,23 @@ export const AuthProvider = ({ children }) => {
         console.log("perm", perm)
         return auth.permissions?.includes(perm);
     }
+
+    const switchUserRole = async (role) => {
+        try {
+            await switchRoleApi(role);
+
+            // 🔥 refresh /me → updates everything
+            await fetchMe();
+
+        } catch (err) {
+            console.error("Failed to switch role", err);
+        }
+    };
     return (
         //wrapper component
         <AuthContext.Provider value={{
             ...auth, loginAuth, loggingout, hasPermission,
-            refreshUser: fetchMe
+            refreshUser: fetchMe,switchUserRole
         }}>
             {children}
         </AuthContext.Provider>
