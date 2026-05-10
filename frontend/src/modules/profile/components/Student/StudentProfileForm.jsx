@@ -1,23 +1,7 @@
-import { useState } from "react"
-import { useAuth } from "../../../core/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
-import api from "../../../core/api/client";
+const StudentProfileForm = ({ mode, formData, setFormData, onSubmit, submitting }) => {
 
-import { toast } from "react-toastify";
 
-const StudentProfileForm = ({ initialData = {}, onSuccess }) => {
-    const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
-        studentClass: "",
-        syllabus: "",
-         ...initialData
-    });
-
-    const [submitting, setSubmitting] = useState(false);
-
-    const { refreshUser } = useAuth();
-
+    console.log("formData", formData)
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -29,27 +13,9 @@ const StudentProfileForm = ({ initialData = {}, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        try {
-            setSubmitting(true);
-
-            await api.post("/api/profile/setup/student", formData);
-            toast.success("Profile completed successfully");
-
-            await refreshUser();
-            navigate("/dashboard");
-
-        } catch (err) {
-            const message =
-                err.response?.data?.message || "Failed to save profile";
-
-            toast.error(message);
-        } finally {
-            setSubmitting(false);
-        }
+        onSubmit();
     };
 
-    // 🔥 THIS IS THE MISSING RETURN
     return (
         <form onSubmit={handleSubmit}>
             <div>

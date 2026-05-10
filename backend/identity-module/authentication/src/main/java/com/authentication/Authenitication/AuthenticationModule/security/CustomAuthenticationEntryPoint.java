@@ -26,7 +26,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String errorCode = "AUTH_001";
-        String message = "Invalid credentials";
+        String message = "Unauthorized";
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now()); // ✅ added
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);

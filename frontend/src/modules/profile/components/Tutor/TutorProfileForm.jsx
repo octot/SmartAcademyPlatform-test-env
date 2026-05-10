@@ -1,40 +1,8 @@
 import { useState } from "react";
-import { useAuth } from "../../../core/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
-import api from "../../../core/api/client";
+
 import { toast } from "react-toastify";
-
-const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
-    const navigate = useNavigate();
-    const { refreshUser } = useAuth();
+const TutorProfileForm = ({ mode, formData, setFormData, onSubmit, submitting }) => {
     const [locationInput, setLocationInput] = useState("");
-    const [formData, setFormData] = useState({
-        aadhaarNumber: "",
-        hasVehicle: false,
-        vehicleType: "",
-        qualification: "",
-        experienceYears: "",
-        entranceCoaching: false,
-        subjects: [],
-        classesHandled: [],
-        syllabusHandled: [],
-        preferredLocations: "",
-        remarks: "",
-        guidelinesAccepted: false,
-        payment: {
-            paymentMethod: "GPAY",
-            gpayNumber: "",
-            accountHolderName: "",
-            bankName: "",
-            branchName: "",
-            accountNumber: "",
-            ifscCode: ""
-        },
-         ...initialData
-    });
-
-    const [submitting, setSubmitting] = useState(false);
-
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -67,28 +35,17 @@ const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        onSubmit();
+        toast.success("Profile updated completed successfully");
 
-        try {
-            setSubmitting(true);
-
-            await api.post("/api/profile/setup/tutor", formData);
-
-            toast.success("Profile completed successfully");
-
-            await refreshUser();
-            navigate("/dashboard");
-
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Error saving profile");
-        } finally {
-            setSubmitting(false);
-        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
 
-            <h3>Basic Info</h3>
+            <h2>
+                {mode === "create" ? "Complete your profile" : "Edit Profile"}
+            </h2>
 
             <input
                 type="text"
@@ -195,7 +152,7 @@ const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
                 onChange={handleChange}
             />
 
-            <label>
+            {mode === "create" && <label>
                 <input
                     type="checkbox"
                     name="guidelinesAccepted"
@@ -204,6 +161,7 @@ const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
                 />
                 Accept Guidelines
             </label>
+            }
 
             <h3>Payment</h3>
 
@@ -239,7 +197,7 @@ const TutorProfileForm = ({ initialData = {}, onSuccess }) => {
             )}
 
             <button type="submit" disabled={submitting}>
-                {submitting ? "Saving..." : "Save Profile"}
+                {mode === "create" ? "Create Profile" : "Update Profile"}
             </button>
         </form>
     );

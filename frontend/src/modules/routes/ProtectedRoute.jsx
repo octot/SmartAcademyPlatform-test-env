@@ -3,15 +3,18 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../../core/auth/AuthContext";
 
 
-export default function ProtectedRoute({ children, permission }) {
-    const { user, loading, hasPermission } = useAuth();
+export default function ProtectedRoute({ children, permission, role }) {
+    const { user, loading, activeRole, hasPermission } = useAuth();
 
-    console.log("loadinFromProtected",loading);
     if (loading) {
-        console.log("permission", permission)
-        console.log("hasPermission(permission)", hasPermission(permission))
         return <div>Loading App::::</div>;
     }
+
+    // Role-based protection
+    if (role && activeRole !== role) {
+        return <Navigate to="/unauthorized" replace />;
+    }
+
     if (!user) {
         return <Navigate to="/login" replace />
     }

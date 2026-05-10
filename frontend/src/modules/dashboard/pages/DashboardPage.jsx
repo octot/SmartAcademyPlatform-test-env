@@ -1,5 +1,4 @@
 import { useAuth } from "../../../core/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
 import roleDashboardMap from "../roleViews/roleDashboardMap";
 export default function DashboardPage() {
     const { activeRole, loading } = useAuth();

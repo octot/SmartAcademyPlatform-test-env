@@ -5,6 +5,10 @@ const menuItems = [
         path: "/dashboard",
     },
     {
+        label: "Profile",
+        path: "/dashboard/profile"
+    },
+    {
         label: "Users",
         path: "/dashboard/users",
         permissions: [

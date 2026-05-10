@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,6 +16,20 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
     private final ErrorProperties errorProperties;
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleJsonError(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .errorCode("REQ_001")
+                .message("Invalid request body")
+                .path(request.getRequestURI())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorResponseDTO> handleAppException(
             AppException ex,

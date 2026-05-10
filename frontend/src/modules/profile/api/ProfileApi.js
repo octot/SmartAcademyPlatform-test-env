@@ -11,3 +11,7 @@ export const updateStudentProfile = (data) =>
 
 export const updateTutorProfile = (data) =>
     api.put("/api/profile/tutor", data);
+
+export const createStudentProfile = (data) => {
+    api.post("/api/profile/setup/student", data);
+}

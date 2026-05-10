@@ -169,7 +169,6 @@ public class AuthService {
         AppUser user = userRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new AppException("USER_NOT_FOUND"));
 
-
         // 🔥 Step 3: update DB (IMPORTANT)
         user.setActiveRole(RoleName.valueOf(requestedRole));
         userRepository.save(user);

@@ -1,8 +1,7 @@
 import "./Topbar.css"
 import { useAuth } from "../../../core/auth/AuthContext"
 export default function Topbar() {
-    const { user,activeRole,roles,auth, loggingout, switchUserRole } = useAuth();
-    console.log("authtoolar", auth)
+    const { user,activeRole,roles, loggingout, switchUserRole } = useAuth();
     return (
         <div className="topbar">
             <span>Hi , {user}</span>
@@ -17,7 +16,7 @@ export default function Topbar() {
                 ))}
             </select>
             <button onClick={loggingout}>Logout</button>
-
+                
         </div>
     )
 

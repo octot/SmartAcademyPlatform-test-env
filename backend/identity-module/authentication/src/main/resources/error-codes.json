@@ -186,5 +186,10 @@
   "BANK_DETAILS_INCOMPLETE": {
     "message": "Bank details incomplete",
     "status": 400
+  },
+
+  "REQ_001": {
+    "message": "Bank details incomplete",
+    "status": 400
   }
 }

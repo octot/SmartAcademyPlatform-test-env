@@ -1,8 +1,8 @@
 import { useAuth } from "../../../core/auth/AuthContext";
-import StudentProfileForm from "../components/StudentProfileForm"
-import TutorProfileForm from "../components/TutorProfileForm"
+import StudentProfileSetup from "../components/Student/StudentProfileSetup"
+import TutorProfileSetup from "../components/Tutor/TutorProfileSetup"
 const SetupProfilePage = () => {
-    const { user, roles, permissions, activeRole, loading } = useAuth();
+    const { activeRole, loading } = useAuth();
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -10,8 +10,8 @@ const SetupProfilePage = () => {
     console.log("activeRole", activeRole)
     return (<div>
         <h2>Complete your profile Bro!</h2>
-        {activeRole === "STUDENT" && <StudentProfileForm />}
-        {activeRole === "TUTOR" && <TutorProfileForm />}
+        {activeRole === "STUDENT" && <StudentProfileSetup />}
+        {activeRole === "TUTOR" && <TutorProfileSetup />}
     </div>
     );
 };
