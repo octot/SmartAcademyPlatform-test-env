@@ -10,14 +10,17 @@ const TutorProfileView = () => {
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
     useEffect(() => {
         fetchProfile();
+
     }, []);
 
     const fetchProfile = async () => {
         try {
             const res = await getTutorProfile();
             setData(res.data);
+            console.log("response", res)
         } catch (error) {
             console.log(error);
         }

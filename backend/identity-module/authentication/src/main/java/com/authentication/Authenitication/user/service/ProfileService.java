@@ -241,7 +241,6 @@ public class ProfileService {
         profile.setPreferredLocations(request.getPreferredLocations());
         profile.setRemarks(request.getRemarks());
 
-        profile.setGuidelinesAccepted(request.isGuidelinesAccepted());
         tutorProfileRepo.save(profile);
 
         TutorPaymentDetails payment = updatePayment(profile, request.getPayment());

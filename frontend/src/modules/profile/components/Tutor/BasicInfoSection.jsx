@@ -1,4 +1,6 @@
 const BasicInfoSection = ({ data }) => {
+
+    console.log("Daaaata", data)
     return (
         <div>
             <h3>Basic Info</h3>

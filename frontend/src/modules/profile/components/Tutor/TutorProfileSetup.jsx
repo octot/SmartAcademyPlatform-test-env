@@ -4,7 +4,7 @@ import api from "../../../../core/api/client";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../../core/auth/AuthContext";
 import TutorProfileForm from "./TutorProfileForm";
-
+import TutorSetupWizard from "./setup/TutorSetupWizard";
 const TutorProfileSetup = () => {
     const { refreshUser } = useAuth();
     const navigate = useNavigate();
@@ -49,8 +49,7 @@ const TutorProfileSetup = () => {
     };
 
     return (
-        <TutorProfileForm
-            mode="create"
+        <TutorSetupWizard 
             formData={formData}
             setFormData={setFormData}
             onSubmit={handleCreate}
