@@ -1,0 +1,139 @@
+/* Page Layout */
+.wizard-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: #f5f7fb;
+}
+
+/* Main Card */
+.wizard-card {
+    width: 100%;
+    max-width: 720px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 32px;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Header */
+.wizard-header {
+    margin-bottom: 32px;
+}
+
+/* Step Indicator */
+.step-indicator {
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #2563eb;
+
+    margin-bottom: 12px;
+}
+
+/* Main Title */
+.wizard-title {
+    margin: 0;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+/* Subtitle */
+.wizard-subtitle {
+    margin-top: 8px;
+
+    font-size: 15px;
+
+    color: #6b7280;
+}
+
+/* Step Content */
+.step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Footer */
+.wizard-footer {
+    margin-top: 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Buttons */
+.wizard-button {
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+}
+
+/* Primary Button */
+.wizard-button.primary {
+    background: #2563eb;
+    color: white;
+}
+
+.wizard-button.primary:hover {
+    background: #1d4ed8;
+}
+
+/* Secondary Button */
+.wizard-button.secondary {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.wizard-button.secondary:hover {
+    background: #d1d5db;
+}
+
+/* Disabled Button */
+.wizard-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .wizard-card {
+        padding: 24px;
+    }
+
+    .wizard-title {
+        font-size: 24px;
+    }
+
+    .wizard-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .wizard-button {
+        width: 100%;
+    }
+}

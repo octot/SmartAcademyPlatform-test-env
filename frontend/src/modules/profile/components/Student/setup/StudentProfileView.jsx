@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getStudentProfile, updateStudentProfile } from "../../api/ProfileApi";
+import { getStudentProfile, updateStudentProfile } from "../../../api/ProfileApi";
 import StudentProfileForm from "./StudentProfileForm";
 import { toast } from "react-toastify";
 const StudentProfileView = () => {

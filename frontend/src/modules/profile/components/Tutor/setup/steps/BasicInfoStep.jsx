@@ -1,3 +1,5 @@
+import "./BasicInfoStep.css";
+import "../../setup/form-common.css"
 const BasicInfoStep = ({
     formData,
     setFormData
@@ -11,15 +13,28 @@ const BasicInfoStep = ({
     };
 
     return (
-        <div>
-            <h3>Basic Info</h3>
+        <div className="step-section">
+
+            <div className="step-section-header">
+                <h3>Basic Information</h3>
+
+                <p>
+                    Add your qualification and
+                    personal details.
+                </p>
+            </div>
 
             {/* Aadhaar */}
-            <div>
-                <label>Aadhaar Number</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Aadhaar Number
+                </label>
 
                 <input
+                    className="form-input"
                     type="text"
+                    placeholder="Enter Aadhaar Number"
                     value={formData.aadhaarNumber}
                     onChange={(e) =>
                         handleChange(
@@ -28,14 +43,20 @@ const BasicInfoStep = ({
                         )
                     }
                 />
+
             </div>
 
             {/* Qualification */}
-            <div>
-                <label>Qualification</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Qualification
+                </label>
 
                 <input
+                    className="form-input"
                     type="text"
+                    placeholder="Enter Qualification"
                     value={formData.qualification}
                     onChange={(e) =>
                         handleChange(
@@ -44,14 +65,20 @@ const BasicInfoStep = ({
                         )
                     }
                 />
+
             </div>
 
             {/* Experience */}
-            <div>
-                <label>Experience (Years)</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Experience (Years)
+                </label>
 
                 <input
+                    className="form-input"
                     type="number"
+                    placeholder="Years of Experience"
                     value={formData.experienceYears}
                     onChange={(e) =>
                         handleChange(
@@ -60,32 +87,40 @@ const BasicInfoStep = ({
                         )
                     }
                 />
+
             </div>
 
             {/* Vehicle Checkbox */}
-            <div>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={formData.hasVehicle}
-                        onChange={(e) =>
-                            handleChange(
-                                "hasVehicle",
-                                e.target.checked
-                            )
-                        }
-                    />
+            <div className="checkbox-group">
 
-                    Has Vehicle
+                <input
+                    type="checkbox"
+                    checked={formData.hasVehicle}
+                    onChange={(e) =>
+                        handleChange(
+                            "hasVehicle",
+                            e.target.checked
+                        )
+                    }
+                />
+
+                <label>
+                    I have a vehicle
                 </label>
+
             </div>
 
             {/* Vehicle Type */}
             {formData.hasVehicle && (
-                <div>
-                    <label>Vehicle Type</label>
+
+                <div className="form-group">
+
+                    <label className="form-label">
+                        Vehicle Type
+                    </label>
 
                     <select
+                        className="form-input"
                         value={formData.vehicleType}
                         onChange={(e) =>
                             handleChange(
@@ -105,9 +140,13 @@ const BasicInfoStep = ({
                         <option value="CAR">
                             Car
                         </option>
+
                     </select>
+
                 </div>
+
             )}
+
         </div>
     );
 };

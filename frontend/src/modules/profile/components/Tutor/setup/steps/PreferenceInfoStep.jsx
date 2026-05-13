@@ -1,3 +1,5 @@
+import "./PreferencesInfoStep.css";
+
 const PreferencesStep = ({
     formData,
     setFormData
@@ -7,6 +9,7 @@ const PreferencesStep = ({
         field,
         value
     ) => {
+
         const values = value
             .split(",")
             .map((item) => item.trim())
@@ -26,18 +29,34 @@ const PreferencesStep = ({
     };
 
     return (
-        <div>
+        <div className="step-section">
 
+            {/* Header */}
+            <div className="step-section-header">
+
+                <h3>Preferences</h3>
+
+                <p>
+                    Add your preferred teaching
+                    locations and additional remarks.
+                </p>
+
+            </div>
 
             {/* Preferred Locations */}
-            <div>
-                <label>Preferred Locations</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Preferred Locations
+                </label>
 
                 <input
+                    className="form-input"
                     type="text"
                     placeholder="Perinthalmanna, Manjeri"
                     value={
-                        formData.preferredLocations?.join(", ") || ""
+                        formData.preferredLocations?.join(", ")
+                        || ""
                     }
                     onChange={(e) =>
                         handleArrayChange(
@@ -46,14 +65,24 @@ const PreferencesStep = ({
                         )
                     }
                 />
+
+                <small className="field-hint">
+                    Separate locations using commas
+                </small>
+
             </div>
 
             {/* Remarks */}
-            <div>
-                <label>Remarks</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Remarks
+                </label>
 
                 <textarea
+                    className="form-input"
                     rows={4}
+                    placeholder="Additional information..."
                     value={formData.remarks || ""}
                     onChange={(e) =>
                         handleChange(
@@ -62,27 +91,31 @@ const PreferencesStep = ({
                         )
                     }
                 />
+
             </div>
 
             {/* Guidelines */}
-            <div>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={
-                            formData.guidelinesAccepted
-                        }
-                        onChange={(e) =>
-                            handleChange(
-                                "guidelinesAccepted",
-                                e.target.checked
-                            )
-                        }
-                    />
+            <div className="checkbox-group">
 
-                    I accept the guidelines
+                <input
+                    type="checkbox"
+                    checked={
+                        formData.guidelinesAccepted
+                    }
+                    onChange={(e) =>
+                        handleChange(
+                            "guidelinesAccepted",
+                            e.target.checked
+                        )
+                    }
+                />
+
+                <label>
+                    I accept the platform guidelines
                 </label>
+
             </div>
+
         </div>
     );
 };

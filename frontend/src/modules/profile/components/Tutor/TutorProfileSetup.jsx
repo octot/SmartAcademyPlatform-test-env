@@ -39,6 +39,7 @@ const TutorProfileSetup = () => {
             toast.success("Profile completed successfully");
 
             await refreshUser();
+            
             navigate("/dashboard");
 
         } catch (err) {

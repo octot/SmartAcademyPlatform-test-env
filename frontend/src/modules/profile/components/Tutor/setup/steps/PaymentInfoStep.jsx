@@ -1,4 +1,6 @@
-const PaymentStep = ({
+import "./PaymentInfoStep.css";
+
+const PaymentInfoStep = ({
     formData,
     setFormData
 }) => {
@@ -9,8 +11,10 @@ const PaymentStep = ({
         field,
         value
     ) => {
+
         setFormData((prev) => ({
             ...prev,
+
             payment: {
                 ...prev.payment,
                 [field]: value
@@ -19,14 +23,29 @@ const PaymentStep = ({
     };
 
     return (
-        <div>
-            <h3>Payment</h3>
+        <div className="step-section">
+
+            {/* Header */}
+            <div className="step-section-header">
+
+                <h3>Payment Information</h3>
+
+                <p>
+                    Add your preferred payment
+                    details for payouts.
+                </p>
+
+            </div>
 
             {/* Payment Method */}
-            <div>
-                <label>Payment Method</label>
+            <div className="form-group">
+
+                <label className="form-label">
+                    Payment Method
+                </label>
 
                 <select
+                    className="form-input"
                     value={payment.paymentMethod}
                     onChange={(e) =>
                         handlePaymentChange(
@@ -40,19 +59,29 @@ const PaymentStep = ({
                     </option>
 
                     <option value="BANK">
-                        Bank
+                        Bank Transfer
                     </option>
+
                 </select>
+
             </div>
 
             {/* GPAY */}
             {payment.paymentMethod === "GPAY" && (
-                <div>
-                    <label>GPay Number</label>
+
+                <div className="form-group">
+
+                    <label className="form-label">
+                        GPay Number
+                    </label>
 
                     <input
+                        className="form-input"
                         type="text"
-                        value={payment.gpayNumber || ""}
+                        placeholder="Enter GPay Number"
+                        value={
+                            payment.gpayNumber || ""
+                        }
                         onChange={(e) =>
                             handlePaymentChange(
                                 "gpayNumber",
@@ -60,21 +89,28 @@ const PaymentStep = ({
                             )
                         }
                     />
+
                 </div>
+
             )}
 
             {/* BANK */}
             {payment.paymentMethod === "BANK" && (
                 <>
-                    <div>
-                        <label>
+
+                    <div className="form-group">
+
+                        <label className="form-label">
                             Account Holder Name
                         </label>
 
                         <input
+                            className="form-input"
                             type="text"
+                            placeholder="Enter Account Holder Name"
                             value={
-                                payment.accountHolderName || ""
+                                payment.accountHolderName
+                                || ""
                             }
                             onChange={(e) =>
                                 handlePaymentChange(
@@ -83,14 +119,22 @@ const PaymentStep = ({
                                 )
                             }
                         />
+
                     </div>
 
-                    <div>
-                        <label>Bank Name</label>
+                    <div className="form-group">
+
+                        <label className="form-label">
+                            Bank Name
+                        </label>
 
                         <input
+                            className="form-input"
                             type="text"
-                            value={payment.bankName || ""}
+                            placeholder="Enter Bank Name"
+                            value={
+                                payment.bankName || ""
+                            }
                             onChange={(e) =>
                                 handlePaymentChange(
                                     "bankName",
@@ -98,14 +142,22 @@ const PaymentStep = ({
                                 )
                             }
                         />
+
                     </div>
 
-                    <div>
-                        <label>IFSC Code</label>
+                    <div className="form-group">
+
+                        <label className="form-label">
+                            IFSC Code
+                        </label>
 
                         <input
+                            className="form-input"
                             type="text"
-                            value={payment.ifscCode || ""}
+                            placeholder="Enter IFSC Code"
+                            value={
+                                payment.ifscCode || ""
+                            }
                             onChange={(e) =>
                                 handlePaymentChange(
                                     "ifscCode",
@@ -113,11 +165,14 @@ const PaymentStep = ({
                                 )
                             }
                         />
+
                     </div>
+
                 </>
             )}
+
         </div>
     );
 };
 
-export default PaymentStep;
+export default PaymentInfoStep;

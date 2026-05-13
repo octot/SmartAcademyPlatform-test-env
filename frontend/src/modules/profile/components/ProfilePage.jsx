@@ -1,5 +1,5 @@
 import { useAuth } from "../../../core/auth/AuthContext";
-import StudentProfileView from "./Student/StudentProfileView";
+import StudentProfileView from "./Student/setup/StudentProfileView";
 import TutorProfileView from "./Tutor/TutorProfileView";
 
 const ProfilePage = () => {
