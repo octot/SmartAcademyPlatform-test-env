@@ -23,7 +23,6 @@ public class EmailService {
     private final TemplateEngine templateEngine;
 
 
-
     @Value("${sendgrid.api.key}")
     private String sendGridApiKey;
 
@@ -56,14 +55,14 @@ public class EmailService {
             request.setBody(mail.build());
             Response response = sg.api(request);
             System.out.println("Status Code: " + response.getStatusCode());
+            System.out.println("Body: " + response.getBody());
+
         } catch (IOException e) {
             log.error("Email sending failed for {}", toEmail, e);
 
         }
 
     }
-
-
 
 
 }

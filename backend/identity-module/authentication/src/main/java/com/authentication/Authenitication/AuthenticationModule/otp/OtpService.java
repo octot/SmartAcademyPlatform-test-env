@@ -29,7 +29,8 @@ public class OtpService {
         otp.setOtpValue(otpValue);
         otp.setCreatedAt(Instant.now());
         otp.setExpiryTime(
-                Instant.now().plus(purpose.getExpiryMinutes(), ChronoUnit.MINUTES)
+                Instant.now().plus(
+                        purpose.getExpiryMinutes(), ChronoUnit.MINUTES)
         );
         otp.setAttemptCount(0);
         otp.setMaxAttempts(purpose.getMaxAttempts());

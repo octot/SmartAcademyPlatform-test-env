@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -109,7 +110,7 @@ public class AuthController {
         return ResponseEntity.ok("Password changed successfully");
     }
 
-    //    @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
+    @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
     @PostMapping("/create-admin")
     public ResponseEntity<String> registerAdmin(@RequestBody RegisterRequestDTO request) {
         userService.existsByUsername(request.getUsername());
@@ -125,7 +126,7 @@ public class AuthController {
 
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequestDTO request) {
-        String otp = authService.resendEmailOtp(request.getLogin());
+        String otp = authService.resendEmailOtp(request.getLogin(), request.getPurpose());
         return ResponseEntity.ok(Map.of("OtpSuccess", otp));
     }
 

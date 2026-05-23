@@ -187,9 +187,13 @@
     "message": "Bank details incomplete",
     "status": 400
   },
-
   "REQ_001": {
-    "message": "Bank details incomplete",
+    "message": "Invalid request body",
+    "status": 400
+  },
+
+  "FIELD_001": {
+    "message": "Field validation failed",
     "status": 400
   }
 }

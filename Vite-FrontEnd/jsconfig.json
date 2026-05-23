@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "baseUrl": "src",
+        "paths": {
+            "@/*": [
+                "*"
+            ],
+            "@auth/*": [
+                "modules/auth/*"
+            ],
+            "@shared/*": [
+                "shared/*"
+            ],
+            "@core/*": [
+                "core/*"
+            ],
+            "@layouts/*": [
+                "layouts/*"
+            ],
+            "@components/*": [
+                "components/*"
+            ]
+        }
+    }
+}

@@ -25,6 +25,4 @@ public class AdminProfile {
     @JoinTable(name = "admin_departments", joinColumns = @JoinColumn(name = "admin_profile_id")
             , inverseJoinColumns = @JoinColumn(name = "department_id"))
     private Set<Department> departments = new HashSet<>();
-
-
 }

@@ -5,27 +5,23 @@ import com.authentication.Authenitication.AuthenticationModule.dto.AuthUserRespo
 import com.authentication.Authenitication.AuthenticationModule.dto.RegisterRequestDTO;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.ResetPasswordRequest;
-import com.authentication.Authenitication.AuthenticationModule.otp.*;
-import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
-import com.authentication.Authenitication.Authorization.Enum.RoleName;
-import com.authentication.Authenitication.Authorization.service.PermissionService;
-import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.AuthenticationModule.otp.*;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
+import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.util.UsernameValidator;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
+import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
 import com.authentication.Authenitication.user.mapper.UserResponseBuilder;
-import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -37,6 +33,7 @@ public class AuthService {
     private final RoleService roleService;
     private final TokenService tokenService;
     private final UserResponseBuilder userResponseBuilder;
+
     public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, UserResponseBuilder userResponseBuilder) {
         this.userRepository = userRepository;
         this.otpService = otpService;
@@ -85,21 +82,22 @@ public class AuthService {
 
 
     @Transactional
-    public String resendEmailOtp(String email) {
+    public String resendEmailOtp(String email, OtpPurpose purpose) {
 
         AppUser user = userRepository.findByProfile_Email(email)
                 .orElseThrow(() -> new AppException("AUTH_011"));
 
-        if (user.isEmailVerified()) {
+        // Only SIGNUP requires unverified email
+        if (user.isEmailVerified() && purpose == OtpPurpose.SIGNUP) {
             throw new AppException("AUTH_008");
         }
-        otpService.otpResentLimitCheck(user, OtpPurpose.SIGNUP);
-        Otp otp = otpService.generateOtp(user, OtpPurpose.SIGNUP);
+        otpService.otpResentLimitCheck(user, purpose);
+        Otp otp = otpService.generateOtp(user, purpose);
 
         otpDeliveryService.sendOtp(
                 user.getProfile().getEmail(),
                 otp.getOtpValue(),
-                OtpPurpose.SIGNUP.getExpiryMinutes()
+                purpose.getExpiryMinutes()
         );
         return otp.getOtpValue();
     }

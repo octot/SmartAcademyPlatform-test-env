@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class ResendOtpRequestDTO {
     private String login;
+    private OtpPurpose purpose;
 }

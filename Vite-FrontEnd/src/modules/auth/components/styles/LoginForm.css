@@ -1,0 +1,90 @@
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.login-header {
+    text-align: center;
+}
+
+.login-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    font-size: 15px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* Form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Forgot Password */
+.forgot-password-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.forgot-password-btn {
+    border: none;
+    background: transparent;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.forgot-password-btn:hover {
+    text-decoration: underline;
+}
+
+/* General Error */
+.general-error {
+    color: #ef4444;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* OAuth Placeholder */
+.social-login-placeholder {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Footer */
+.login-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.login-footer a {
+    margin-left: 6px;
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    .login-header h2 {
+        font-size: 26px;
+    }
+}

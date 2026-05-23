@@ -33,7 +33,7 @@ public class AuthorizationControllerTest {
     }
 
     @PreAuthorize("hasAuthority('ADMIN_CREATE_GLOBAL')")
-    @GetMapping("/create-admin")
+    @GetMapping("/get-admin")
     public String admin() {
         return "Create_admin_permission working";
     }

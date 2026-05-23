@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/auth/resend-otp",
                                 "/auth/forgot-password",
                                 "/auth/reset-password",
-                                "/auth/logout"
+                                "/auth/logout",
+                                "/auth/create-admin"
                         ).permitAll()
 
                         // PROTECTED AUTH ENDPOINTS

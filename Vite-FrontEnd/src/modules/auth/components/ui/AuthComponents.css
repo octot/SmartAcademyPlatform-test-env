@@ -1,0 +1,115 @@
+/* Shared Auth UI Components */
+
+.auth-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Labels */
+.auth-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Inputs */
+.auth-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 15px;
+    outline: none;
+    background: #fafafa;
+    transition: all 0.25s ease;
+}
+
+.auth-input:focus {
+    border-color: #4f46e5;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+/* Error State */
+.input-error {
+    border-color: #ef4444;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+/* Hint Text */
+.auth-hint {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* Error Text */
+.auth-error {
+    font-size: 13px;
+    color: #ef4444;
+    line-height: 1.5;
+}
+
+/* Password */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    border: none;
+    background: transparent;
+    color: #4f46e5;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Button */
+.auth-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg,
+            #4f46e5,
+            #7c3aed);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.25);
+}
+
+.auth-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}

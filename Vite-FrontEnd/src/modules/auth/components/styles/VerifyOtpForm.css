@@ -1,0 +1,88 @@
+.verify-otp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.verify-otp-header {
+    text-align: center;
+}
+
+.verify-otp-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.verify-otp-header p {
+    font-size: 15px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* Form */
+.verify-otp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* General Error */
+.general-error {
+    color: #ef4444;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Actions */
+.otp-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.resend-otp-btn {
+    border: none;
+    background: transparent;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.resend-otp-btn:hover {
+    text-decoration: underline;
+}
+
+.resend-otp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Footer */
+.verify-otp-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.verify-otp-footer a {
+    margin-left: 6px;
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.verify-otp-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    .verify-otp-header h2 {
+        font-size: 26px;
+    }
+}

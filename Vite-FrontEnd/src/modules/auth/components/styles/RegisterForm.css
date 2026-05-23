@@ -1,0 +1,100 @@
+.register-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.register-header {
+    text-align: center;
+}
+
+.register-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.register-header p {
+    font-size: 15px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* Form */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Role Section */
+.role-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.role-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.role-container {
+    display: flex;
+    gap: 24px;
+}
+
+.role-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #374151;
+    font-size: 15px;
+}
+
+.role-option input[type="radio"] {
+    accent-color: #4f46e5;
+    transform: scale(1.05);
+}
+
+/* OAuth Placeholder */
+.social-login-placeholder {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Footer */
+.register-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.register-footer a {
+    margin-left: 6px;
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+
+    .register-header h2 {
+        font-size: 26px;
+    }
+
+    .role-container {
+        flex-direction: column;
+        gap: 14px;
+    }
+}

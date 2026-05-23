@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +15,10 @@ import java.time.LocalDateTime;
 @Builder
 public class ErrorResponseDTO {
     private LocalDateTime timestamp;
-    private String errorCode;
-    private String message;
+
     private String path;
+
+    private boolean success;
+
+    private List<ValidationErrorDTO> errors;
 }

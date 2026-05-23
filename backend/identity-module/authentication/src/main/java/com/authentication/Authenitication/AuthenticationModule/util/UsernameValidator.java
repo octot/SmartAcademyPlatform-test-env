@@ -15,19 +15,19 @@ public class UsernameValidator {
 
     public static void validate(String username) {
         if (username == null || username.isBlank()) {
-            throw new AppException("VAL_001");
+            throw new AppException("VAL_001", "username");
         }
 
         if (username.contains("@")) {
-            throw new AppException("VAL_002");
+            throw new AppException("VAL_002", "username");
         }
 
         if (EMAIL_PATTERN.matcher(username).matches()) {
-            throw new AppException("VAL_003");
+            throw new AppException("VAL_003", "email");
         }
 
         if (!USERNAME_PATTERN.matcher(username).matches()) {
-            throw new AppException("VAL_004");
+            throw new AppException("VAL_004", "username");
         }
 
 
