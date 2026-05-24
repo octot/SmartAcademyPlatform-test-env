@@ -191,9 +191,12 @@
     "message": "Invalid request body",
     "status": 400
   },
-
   "FIELD_001": {
     "message": "Field validation failed",
+    "status": 400
+  },
+  "ADMIN_REQ_001": {
+    "message": "Admin username already taken",
     "status": 400
   }
 }

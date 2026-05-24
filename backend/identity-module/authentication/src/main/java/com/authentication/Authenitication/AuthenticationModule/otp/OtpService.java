@@ -2,8 +2,10 @@ package com.authentication.Authenitication.AuthenticationModule.otp;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -14,17 +16,20 @@ public class OtpService {
     private final OtpRepository otpRepository;
 
     public OtpService(
-                      OtpRepository otpRepository) {
+            OtpRepository otpRepository) {
         this.otpRepository = otpRepository;
     }
-    public Otp generateOtp(AppUser user, OtpPurpose purpose) {
 
-        otpRepository.invalidateActiveOtp(user.getId(), purpose);
+    public Otp generateOtp(String target,
+                           VerificationChannel channel, OtpPurpose purpose) {
+
+        otpRepository.invalidateActiveOtp(target, purpose);
 
         String otpValue = OtpUtil.generateOtp();
 
         Otp otp = new Otp();
-        otp.setUser(user);
+        otp.setTarget(target);
+        otp.setChannel(channel);
         otp.setPurpose(purpose);
         otp.setOtpValue(otpValue);
         otp.setCreatedAt(Instant.now());
@@ -38,10 +43,11 @@ public class OtpService {
 
         return otpRepository.save(otp);
     }
-    @Transactional(noRollbackFor = AppException.class)
-    public void verifyOtp(AppUser user, OtpPurpose purpose, String inputOtp) {
 
-        Otp otp = otpRepository.findActiveOtp(user.getId(), purpose)
+    @Transactional(noRollbackFor = AppException.class)
+    public void verifyOtp(String target, OtpPurpose purpose, String inputOtp) {
+
+        Otp otp = otpRepository.findActiveOtp(target, purpose)
                 .orElseThrow(() -> new AppException("AUTH_013"));
 
         if (otp.getExpiryTime().isBefore(Instant.now())) {
@@ -65,11 +71,11 @@ public class OtpService {
 
 
     @Transactional
-    public void otpResentLimitCheck(AppUser user, OtpPurpose purpose){
+    public void otpResentLimitCheck(String target, OtpPurpose purpose) {
         Instant now = Instant.now();
 
-        Otp latestOtp=otpRepository
-                .findTopByUserIdAndPurposeOrderByCreatedAtDesc(user.getId(),purpose).
+        Otp latestOtp = otpRepository
+                .findTopByTargetAndPurposeOrderByCreatedAtDesc(target, purpose).
                 orElse(null);
 
         if (latestOtp != null &&
@@ -79,7 +85,7 @@ public class OtpService {
 
         long last10MinCount = otpRepository
                 .countRecentOtps(
-                        user.getId(),
+                        target,
                         purpose,
                         now.minus(10, ChronoUnit.MINUTES)
                 );

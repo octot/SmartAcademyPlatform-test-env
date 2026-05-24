@@ -8,10 +8,13 @@ import com.authentication.Authenitication.AuthenticationModule.entity.ResetPassw
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.otp.*;
+import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.AuthenticationModule.util.UsernameValidator;
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
+import com.authentication.Authenitication.admin.entity.AdminRegistrationRequest;
+import com.authentication.Authenitication.admin.repository.AdminRegistrationRequestRepository;
 import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
 import com.authentication.Authenitication.user.mapper.UserResponseBuilder;
@@ -33,8 +36,9 @@ public class AuthService {
     private final RoleService roleService;
     private final TokenService tokenService;
     private final UserResponseBuilder userResponseBuilder;
+    private final AdminRegistrationRequestRepository adminRequestRepository;
 
-    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, UserResponseBuilder userResponseBuilder) {
+    public AuthService(UserRepository userRepository, OtpService otpService, OtpDeliveryService otpDeliveryService, PasswordEncoder passwordEncoder, RoleService roleService, TokenService tokenService, UserResponseBuilder userResponseBuilder, AdminRegistrationRequestRepository adminRequestRepository) {
         this.userRepository = userRepository;
         this.otpService = otpService;
         this.otpDeliveryService = otpDeliveryService;
@@ -42,34 +46,124 @@ public class AuthService {
         this.roleService = roleService;
         this.tokenService = tokenService;
         this.userResponseBuilder = userResponseBuilder;
+        this.adminRequestRepository = adminRequestRepository;
     }
 
-    public VerifyOtpResponse verifyEmailOtp(VerifyOtpRequestDTO request) {
-
-        AppUser user = userRepository.findByProfile_Email(request.getLogin())
-                .orElseThrow(() -> new AppException("AUTH_011"));
-
-        otpService.verifyOtp(user, request.getPurpose(), request.getOtp());
+    public VerifyOtpResponse verifyOtp(
+            VerifyOtpRequestDTO request
+    ) {
 
         switch (request.getPurpose()) {
-            case SIGNUP:
+
+            case SIGNUP -> {
+                AppUser user = userRepository
+                        .findByProfile_Email(
+                                request.getLogin()
+                        )
+                        .orElseThrow(
+                                () -> new AppException("AUTH_011")
+                        );
+                otpService.verifyOtp(
+                        request.getLogin(),
+                        request.getPurpose(),
+                        request.getOtp()
+                );
+
                 if (user.isEmailVerified()) {
                     throw new AppException("AUTH_007");
                 }
 
                 user.setEmailVerified(true);
-                user.getProfile().setStatus(UserStatus.ACTIVE);
+
+                user.getProfile()
+                        .setStatus(UserStatus.ACTIVE);
+
                 userRepository.save(user);
-                return new VerifyOtpResponse("Signup verified successfully");
 
-            case PASSWORD_RESET:
-                String resetToken = tokenService.generateResetToken(user);
-                return new VerifyOtpResponse("OTP verified", resetToken);
+                return new VerifyOtpResponse(
+                        "Signup verified successfully"
+                );
+            }
 
-            default:
-                throw new AppException("AUTH_017");
+            case PASSWORD_RESET -> {
+
+                AppUser user = userRepository
+                        .findByProfile_Email(
+                                request.getLogin()
+                        )
+                        .orElseThrow(
+                                () -> new AppException("AUTH_011")
+                        );
+
+                otpService.verifyOtp(
+                        request.getLogin(),
+                        request.getPurpose(),
+                        request.getOtp()
+                );
+
+                String resetToken =
+                        tokenService.generateResetToken(user);
+
+                return new VerifyOtpResponse(
+                        "OTP verified",
+                        resetToken
+                );
+            }
+
+            case ADMIN_EMAIL_VERIFICATION -> {
+
+                AdminRegistrationRequest adminRequest =
+                        adminRequestRepository
+                                .findByEmail(
+                                        request.getLogin()
+                                )
+                                .orElseThrow(
+                                        () -> new AppException(
+                                                "ADMIN_REQ_003"
+                                        )
+                                );
+
+                otpService.verifyOtp(
+                        request.getLogin(),
+                        request.getPurpose(),
+                        request.getOtp()
+                );
+
+                adminRequest.setEmailVerified(true);
+
+                adminRequestRepository.save(adminRequest);
+
+                return new VerifyOtpResponse(
+                        "Admin email verified successfully"
+                );
+            }
+
+            default -> throw new AppException("AUTH_017");
         }
+    }
 
+    public void verifyAdminEmailOtp(
+            VerifyOtpRequestDTO request
+    ) {
+
+        AdminRegistrationRequest adminRequest =
+                adminRequestRepository
+                        .findByEmail(request.getLogin())
+                        .orElseThrow(
+                                () -> new AppException(
+                                        "ADMIN_REQ_003"
+                                )
+                        );
+
+        otpService.verifyOtp(
+                adminRequest.getEmail(),
+                request.getPurpose(),
+                request.getOtp()
+        );
+
+        adminRequest.setEmailVerified(true);
+
+        adminRequestRepository.save(adminRequest);
     }
 
     public void resetPassword(ResetPasswordRequest request) {
@@ -82,20 +176,19 @@ public class AuthService {
 
 
     @Transactional
-    public String resendEmailOtp(String email, OtpPurpose purpose) {
+    public String sendOtp(String target, OtpPurpose purpose) {
 
-        AppUser user = userRepository.findByProfile_Email(email)
-                .orElseThrow(() -> new AppException("AUTH_011"));
+        validateOtpResendTarget(
+                target,
+                purpose
+        );
+        //IMP
+        otpService.otpResentLimitCheck(target, purpose);
 
-        // Only SIGNUP requires unverified email
-        if (user.isEmailVerified() && purpose == OtpPurpose.SIGNUP) {
-            throw new AppException("AUTH_008");
-        }
-        otpService.otpResentLimitCheck(user, purpose);
-        Otp otp = otpService.generateOtp(user, purpose);
+        Otp otp = otpService.generateOtp(target, VerificationChannel.EMAIL, purpose);
 
         otpDeliveryService.sendOtp(
-                user.getProfile().getEmail(),
+                target,
                 otp.getOtpValue(),
                 purpose.getExpiryMinutes()
         );
@@ -103,17 +196,13 @@ public class AuthService {
     }
 
     @Transactional
-    public String forgotEmailOtp(String email) {
+    public String forgotOtp(String target) {
 
-        AppUser user = userRepository.findByProfile_Email(email)
-                .orElseThrow(() -> new AppException("AUTH_011"));
-
-
-        otpService.otpResentLimitCheck(user, OtpPurpose.PASSWORD_RESET);
-        Otp otp = otpService.generateOtp(user, OtpPurpose.PASSWORD_RESET);
+        otpService.otpResentLimitCheck(target, OtpPurpose.PASSWORD_RESET);
+        Otp otp = otpService.generateOtp(target, VerificationChannel.EMAIL, OtpPurpose.PASSWORD_RESET);
 
         otpDeliveryService.sendOtp(
-                user.getProfile().getEmail(),
+                target,
                 otp.getOtpValue(),
                 OtpPurpose.PASSWORD_RESET.getExpiryMinutes()
         );
@@ -175,5 +264,54 @@ public class AuthService {
 
     }
 
+    private void validateOtpResendTarget(
+            String target,
+            OtpPurpose purpose
+    ) {
+
+        switch (purpose) {
+
+            case SIGNUP -> {
+
+                AppUser user = userRepository
+                        .findByProfile_Email(target)
+                        .orElseThrow(
+                                () -> new AppException("AUTH_011")
+                        );
+
+                if (user.isEmailVerified()) {
+                    throw new AppException("AUTH_008");
+                }
+            }
+
+            case ADMIN_EMAIL_VERIFICATION -> {
+
+                AdminRegistrationRequest adminRequest =
+                        adminRequestRepository
+                                .findByEmail(target)
+                                .orElseThrow(
+                                        () -> new AppException(
+                                                "ADMIN_REQ_003"
+                                        )
+                                );
+
+                if (adminRequest.isEmailVerified()) {
+                    throw new AppException(
+                            "ADMIN_REQ_004"
+                    );
+                }
+            }
+
+            case PASSWORD_RESET -> {
+
+                userRepository.findByProfile_Email(target)
+                        .orElseThrow(
+                                () -> new AppException("AUTH_011")
+                        );
+            }
+
+            default -> throw new AppException("AUTH_017");
+        }
+    }
 
 }

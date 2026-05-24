@@ -1,6 +1,7 @@
 package com.authentication.Authenitication.AuthenticationModule.otp;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
+import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,12 @@ public class Otp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private AppUser user;
+    @Column(nullable = false)
+    private String target;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private VerificationChannel channel;
 
     @Column(name = "otp_value", nullable = false)
     private String otpValue;

@@ -5,6 +5,7 @@ import com.authentication.Authenitication.AuthenticationModule.dto.EmailChangeRe
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.EmailChangeRequest;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import com.authentication.Authenitication.AuthenticationModule.repository.EmailChangeRepository;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.otp.OtpDeliveryService;
@@ -73,7 +74,7 @@ public class EmailChangeService {
         emailChangeRepository.save(request);
 
         // 7️⃣ Generate OTP linked to this request
-        String otp = otpService.generateOtp(user, OtpPurpose.EMAIL_CHANGE).getOtpValue();
+        String otp = otpService.generateOtp(user.getProfile().getEmail(), VerificationChannel.EMAIL, OtpPurpose.EMAIL_CHANGE).getOtpValue();
         otpDeliveryService.sendOtp(
                 dto.getNewEmail(),
                 otp,
@@ -94,7 +95,7 @@ public class EmailChangeService {
             throw new AppException("EMAIL_002");
         }
 
-        otpService.verifyOtp(user, OtpPurpose.EMAIL_CHANGE, request.getOtp());
+        otpService.verifyOtp(user.getProfile().getEmail(), OtpPurpose.EMAIL_CHANGE, request.getOtp());
 
         user.getProfile().setEmail(emailRequest.getNewEmail());
         userRepository.save(user);

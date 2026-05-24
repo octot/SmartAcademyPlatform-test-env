@@ -15,13 +15,13 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
 
     @Query("""
                 SELECT o FROM Otp o
-                WHERE o.user.id = :userId
+                WHERE o.target = :target
                   AND o.purpose = :purpose
                   AND o.isUsed = false
                 ORDER BY o.createdAt DESC
             """)
     Optional<Otp> findActiveOtp(
-            @Param("userId") UUID userId,
+            @Param("target") String target,
             @Param("purpose") OtpPurpose purpose
     );
 
@@ -31,27 +31,27 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
     @Query("""
             UPDATE Otp o
             SET o.isUsed = true
-            WHERE o.user.id = :userId
+            WHERE o.target = :target
               AND o.purpose = :purpose
               AND o.isUsed = false
             """)
-    void invalidateActiveOtp(@Param("userId") UUID userId, @Param("purpose") OtpPurpose otpPurpose);
+    void invalidateActiveOtp(@Param("target") String target, @Param("purpose") OtpPurpose otpPurpose);
 
 
     @Query("""
        SELECT COUNT(o)
        FROM Otp o
-       WHERE o.user.id = :userId
+       WHERE o.target = :target
          AND o.purpose = :purpose
          AND o.createdAt > :time
        """)
     long countRecentOtps(
-            UUID userId,
+            String target,
             OtpPurpose purpose,
             Instant time
     );
-    Optional<Otp> findTopByUserIdAndPurposeOrderByCreatedAtDesc(
-            UUID userId,
+    Optional<Otp> findTopByTargetAndPurposeOrderByCreatedAtDesc(
+            String target,
             OtpPurpose purpose
     );
 

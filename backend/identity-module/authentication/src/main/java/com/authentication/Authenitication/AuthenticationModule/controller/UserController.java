@@ -72,7 +72,6 @@ public class UserController {
         UUID userId = userDetails.getUser().getId();
         emailChangeService.verifyEmailChange(userId, requestDto);
         return ResponseEntity.ok("email success");
-
     }
 
     @PostMapping("/switch-role")

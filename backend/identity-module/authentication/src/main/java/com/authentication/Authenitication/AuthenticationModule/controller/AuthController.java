@@ -121,18 +121,18 @@ public class AuthController {
     @PostMapping("/verify-otp")
     public VerifyOtpResponse verifyOtp(
             @RequestBody VerifyOtpRequestDTO request) {
-        return authService.verifyEmailOtp(request);
+        return authService.verifyOtp(request);
     }
 
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequestDTO request) {
-        String otp = authService.resendEmailOtp(request.getLogin(), request.getPurpose());
+        String otp = authService.sendOtp(request.getLogin(), request.getPurpose());
         return ResponseEntity.ok(Map.of("OtpSuccess", otp));
     }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotRequestDTO request) {
-        String otp = authService.forgotEmailOtp(request.getLogin());
+        String otp = authService.forgotOtp(request.getLogin());
         return ResponseEntity.ok(Map.of("OtpSuccess", otp));
     }
 
