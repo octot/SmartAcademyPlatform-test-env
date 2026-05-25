@@ -43,7 +43,6 @@ public class SecurityConfig {
 
                 // ✅ Define public & secured endpoints
                 .authorizeHttpRequests(auth -> auth
-
                         // PUBLIC AUTH ENDPOINTS
                         .requestMatchers(
                                 "/auth/login",

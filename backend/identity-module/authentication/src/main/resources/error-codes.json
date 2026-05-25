@@ -198,5 +198,17 @@
   "ADMIN_REQ_001": {
     "message": "Admin username already taken",
     "status": 400
+  },
+  "ADMIN_REQ_003": {
+    "message": "Admin request not found",
+    "status": 404
+  },
+  "ADMIN_REQ_005": {
+    "message": "Admin request is no longer pending",
+    "status": 400
+  },
+  "ADMIN_REQ_006": {
+    "message": "Admin request email not verified",
+    "status": 400
   }
 }

@@ -19,13 +19,15 @@ import java.util.UUID;
 @Builder
 public class AdminRegistrationRequest {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    private String phoneNumber;
+
 
     @Column(nullable = false, unique = true)
     private String email;
