@@ -80,9 +80,7 @@ public class AdminProvisioningService {
         user.setUsername(request.getUsername());
 
         user.setPassword(
-                passwordEncoder.encode(
-                        request.getPassword()
-                )
+                request.getPassword()
         );
 
         user.setRoles(

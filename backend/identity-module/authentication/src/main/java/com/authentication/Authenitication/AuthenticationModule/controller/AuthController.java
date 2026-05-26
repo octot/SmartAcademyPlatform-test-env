@@ -44,6 +44,7 @@ public class AuthController {
     private final UserService userService;
     private final PasswordService passwordService;
 
+
     public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, SecurityUserDetailsService customUserDetailsService, AuthService authService, UserService userService, PasswordService passwordService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -53,8 +54,11 @@ public class AuthController {
         this.passwordService = passwordService;
     }
 
+
+//    NEED TO CHECK THE ADMIN NOT ABLE TO LOGIN AFTER CREATION
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
         CustomUserDetails user =
                 customUserDetailsService
