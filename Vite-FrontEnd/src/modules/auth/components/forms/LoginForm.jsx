@@ -110,7 +110,7 @@ export default function LoginForm() {
             navigate("/dashboard");
 
         } catch (err) {
-
+          
             const errorCode = err?.code;
 
             switch (errorCode) {
@@ -130,7 +130,6 @@ export default function LoginForm() {
                     navigate("/verify-email", {
                         state: {
                             login: form.login,
-                            triggerOtp: true,
                             otpPurpose: OTP_PURPOSE.PASSWORD_RESET
                         }
                     });
@@ -145,6 +144,16 @@ export default function LoginForm() {
                     }));
 
                     break;
+                
+                     case "ADMIN_REQ_008":
+
+                    setErrors(prev => ({
+                        ...prev,
+                        password: "Your admin onboarding request is still under review"
+                    }));
+
+                    break;
+                
 
                 default:
 

@@ -20,11 +20,13 @@ import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.user.entity.UserProfile;
 import com.authentication.Authenitication.user.mapper.UserResponseBuilder;
 import com.authentication.Authenitication.user.service.ProfileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,7 @@ import static com.authentication.Authenitication.AuthenticationModule.dto.UserRe
 import static com.authentication.Authenitication.Utiity.UtilityFunctions.updateIfNotNull;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -40,13 +43,6 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserResponseBuilder userResponseBuilder;
 
-    public UserService(UserRepository userRepository, PermissionService permissionService, ProfileService profileService, RoleRepository roleRepository, UserResponseBuilder userResponseBuilder) {
-        this.userRepository = userRepository;
-        this.permissionService = permissionService;
-        this.profileService = profileService;
-        this.roleRepository = roleRepository;
-        this.userResponseBuilder = userResponseBuilder;
-    }
 
     public AppUser findByUsername(String login) {
         AppUser user;
@@ -170,4 +166,7 @@ public class UserService {
         return userResponseBuilder.buildUserResponse(user);
     }
 
+    public Optional<AppUser> findByProfile_Email(String login) {
+        return userRepository.findByProfile_Email(login);
+    }
 }

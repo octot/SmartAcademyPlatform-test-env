@@ -210,5 +210,13 @@
   "ADMIN_REQ_006": {
     "message": "Admin request email not verified",
     "status": 400
+  },
+  "ADMIN_REQ_008": {
+    "message": "Your admin onboarding request is still under review",
+    "status": 403
+  },
+  "ADMIN_REQ_009": {
+    "message": "Your admin onboarding request was rejected",
+    "status": 403
   }
 }

@@ -176,7 +176,7 @@ public class AuthService {
 
 
     @Transactional
-    public String sendOtp(String target, OtpPurpose purpose) {
+    public void sendOtp(String target, OtpPurpose purpose) {
 
         validateOtpResendTarget(
                 target,
@@ -192,7 +192,6 @@ public class AuthService {
                 otp.getOtpValue(),
                 purpose.getExpiryMinutes()
         );
-        return otp.getOtpValue();
     }
 
     @Transactional
@@ -238,12 +237,14 @@ public class AuthService {
     public void register(RegisterRequestDTO request) {
         checkUserNameAndEmailExist(request);
         createUser(request);
+        sendOtp(request.getEmail(), OtpPurpose.SIGNUP);
     }
 
     //TODO need to handle role for admin
     public void registerForAdmin(RegisterRequestDTO request) {
         checkUserNameAndEmailExist(request);
         createUser(request);
+
     }
 
     public AuthUserResponse switchRole(CustomUserDetails userDetails, String requestedRole) {

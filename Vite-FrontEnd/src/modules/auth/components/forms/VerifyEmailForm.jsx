@@ -11,7 +11,7 @@ export default function VerifyEmailForm() {
     const location = useLocation();
 
     const login = location.state?.login;
-    const triggerOtp = location.state?.triggerOtp;
+
     const purpose = location.state?.otpPurpose;
     
     console.log("location", location);
@@ -23,23 +23,6 @@ export default function VerifyEmailForm() {
             navigate("/login");
         }
     }, [login, navigate]);
-
-
-
-    useEffect(() => {
-        if (triggerOtp && login) {
-            resentOtp({ login,purpose })
-                .then(() => {
-                    alert("OTP sent to your registered email");
-                })
-                .catch(() => {
-                    setError("Failed to send OTP");
-                });
-
-            // ✅ Prevent resend on refresh
-            window.history.replaceState({}, document.title);
-        }
-    }, [triggerOtp, login]);
 
 
     const handleSubmit = async (e) => {

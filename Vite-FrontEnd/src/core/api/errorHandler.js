@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 export const ERROR_CODES = {
     USER_NOT_FOUND: "USER_NOT_FOUND",
     INVALID_PASSWORD: "INVALID_PASSWORD",
@@ -9,7 +7,7 @@ export const ERROR_CODES = {
     SERVER_ERROR: "SERVER_ERROR",
 };
 export const handleApiError = (error) => {
-    console.log("Error is",error)
+    console.log("Error is", error)
     if (error.code === "ERR_NETWORK") {
         return {
             status: null,
@@ -30,13 +28,14 @@ export const handleApiError = (error) => {
 
     console.log(error)
     const status = error.response?.status;
-    const code = error.response?.data?.errorCode;
-    const backendMessage=error.response.data?.message;
-
+    const apiError =
+        error.response?.data?.errors?.[0];
+    const code = apiError?.code;
+    const backendMessage = apiError?.message;
     return {
         status,
         code,
-        message:backendMessage || fallbackMessage(status),
+        message: backendMessage || fallbackMessage(status),
         raw: error,
     };
 };

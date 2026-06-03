@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
             console.log("resFromAUth", res)
             return res;
         } catch (err) {
+            console.log("errfromlogin",err)
             const message = err.response?.data?.message || "Login failed";
             toast.error(message);
         }

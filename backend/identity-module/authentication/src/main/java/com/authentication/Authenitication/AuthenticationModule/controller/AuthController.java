@@ -16,10 +16,13 @@ import com.authentication.Authenitication.AuthenticationModule.service.SecurityU
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.entity.Permission;
+import com.authentication.Authenitication.admin.enums.ApprovalStatus;
+import com.authentication.Authenitication.admin.repository.AdminRegistrationRequestRepository;
 import com.authentication.Authenitication.role.Role;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +35,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -43,21 +48,25 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
     private final PasswordService passwordService;
+    private final AdminRegistrationRequestRepository adminRequestRepository;
 
 
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, SecurityUserDetailsService customUserDetailsService, AuthService authService, UserService userService, PasswordService passwordService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.customUserDetailsService = customUserDetailsService;
-        this.authService = authService;
-        this.userService = userService;
-        this.passwordService = passwordService;
-    }
-
-
-//    NEED TO CHECK THE ADMIN NOT ABLE TO LOGIN AFTER CREATION
+    //    NEED TO CHECK THE ADMIN NOT ABLE TO LOGIN AFTER CREATION
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        Optional<AppUser> existingUser =
+                userService.findByProfile_Email(
+                        request.getLogin()
+                );
+        if (existingUser.isEmpty()) {
+
+            handlePendingAdminRequest(
+                    request.getLogin()
+            );
+
+            throw new AppException("AUTH_011");
+        }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
         CustomUserDetails user =
@@ -100,6 +109,32 @@ public class AuthController {
 
     }
 
+    private void handlePendingAdminRequest(
+            String email
+    ) {
+
+        adminRequestRepository
+                .findByEmail(email)
+                .ifPresent(request -> {
+
+                    if (request.getStatus()
+                            == ApprovalStatus.PENDING) {
+
+                        throw new AppException(
+                                "ADMIN_REQ_008"
+                        );
+                    }
+
+                    if (request.getStatus()
+                            == ApprovalStatus.REJECTED) {
+
+                        throw new AppException(
+                                "ADMIN_REQ_009"
+                        );
+                    }
+                });
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO request) {
         userService.existsByUsername(request.getUsername());
@@ -130,8 +165,8 @@ public class AuthController {
 
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@RequestBody ResendOtpRequestDTO request) {
-        String otp = authService.sendOtp(request.getLogin(), request.getPurpose());
-        return ResponseEntity.ok(Map.of("OtpSuccess", otp));
+        authService.sendOtp(request.getLogin(), request.getPurpose());
+        return ResponseEntity.ok("OtpSuccess");
     }
 
     @PostMapping("/forgot-password")

@@ -16,6 +16,8 @@ import { ToastContainer } from "react-toastify";
 import ProfileGuard from "./modules/profile/components/ProfileGuard";
 import SetupProfilePage from "./modules/profile/pages/SetupProfilePage";
 import ProfilePage from "./modules/profile/components/ProfilePage";
+import AdminApplicationPage from "@auth/pages/AdminApplicationPage"
+import AdminPendingApprovalPage from "./modules/auth/pages/AdminPendingApprovalPage";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -60,7 +62,7 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<DashboardPage />} />
-          
+
           <Route path="profile" element={<ProfilePage />} />
 
           <Route
@@ -93,7 +95,14 @@ function App() {
         {/* 🔥 ADD THIS */}
         <Route path="/setup-profile" element={<SetupProfilePage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
-
+        <Route
+          path="/auth/admin/apply"
+          element={<AdminApplicationPage />}
+        />
+        <Route
+          path="/auth/admin/pending"
+          element={<AdminPendingApprovalPage />}
+        />
 
       </Routes>
     </BrowserRouter>

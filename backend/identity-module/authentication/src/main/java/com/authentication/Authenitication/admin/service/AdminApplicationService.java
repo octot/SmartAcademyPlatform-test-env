@@ -1,7 +1,9 @@
 package com.authentication.Authenitication.admin.service;
 
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.AuthenticationModule.otp.OtpPurpose;
 import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
+import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.admin.dto.AdminApplicationRequestDTO;
 import com.authentication.Authenitication.admin.entity.AdminRegistrationRequest;
 import com.authentication.Authenitication.admin.enums.ApprovalStatus;
@@ -22,6 +24,8 @@ public class AdminApplicationService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthService authService;
+
     public void applyForAdmin(
             AdminApplicationRequestDTO request
     ) {
@@ -34,6 +38,8 @@ public class AdminApplicationService {
                 buildAdminRequest(request);
 
         adminRequestRepository.save(adminRequest);
+
+        authService.sendOtp(request.getEmail(), OtpPurpose.ADMIN_EMAIL_VERIFICATION);
     }
 
     private void validateUsername(String username) {

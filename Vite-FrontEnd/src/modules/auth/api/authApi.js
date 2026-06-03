@@ -3,15 +3,20 @@ import api from "../../../core/api/client";
 
 //Login
 export const login = async (data) => {
-    const response = await api.post("/auth/login", data);
-    return response.data;
+    try {
+        const response = await api.post("/auth/login", data);
+        return response.data;
+    }
+    catch (error) {
+        console.log("errorLogin", error)
+        throw error.response?.data || "Login Failed :(";
+    }
 }
 export const logout = async () => {
     try {
         await api.post("/auth/logout");
         console.log("Triggered!")
     } catch (err) {
-
     }
 
 }
@@ -36,20 +41,20 @@ export const forgotPassword = async (data) => {
 }
 export const verifyOtp = async ({ login, otp, purpose }) => {
     try {
-      
+
 
         const response = await api.post("/auth/verify-otp", { login, otp, purpose });
 
         return response.data;
     } catch (error) {
         throw error.response?.data || "Invalid OTP In VerifyOtp";
-    }   
+    }
 };
 
-export const resentOtp = async ({ login ,purpose}) => {
+export const resentOtp = async ({ login, purpose }) => {
     try {
-          console.log("resentOtploginotp", login, purpose);
-        const response = await api.post("/auth/resend-otp", { login,purpose });
+        console.log("resentOtploginotp", login, purpose);
+        const response = await api.post("/auth/resend-otp", { login, purpose });
         console.log("reaching resentOp", response)
 
         return response.data;
@@ -66,4 +71,19 @@ export const resetPassword = async ({ resetToken, newPassword }) => {
     } catch (error) {
         throw error.response?.data || "Reset failed";
     }
+};
+
+export const applyForAdmin = async (payload) => {
+    try {
+        const response = await api.post(
+            "/auth/admin-request",
+            payload
+        );
+
+        return response.data;
+    }
+    catch (error) {
+        throw error.response?.data || "Admin Apply failed";
+    }
+
 };

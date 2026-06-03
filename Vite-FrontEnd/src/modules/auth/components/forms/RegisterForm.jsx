@@ -148,7 +148,6 @@ export default function RegisterForm() {
             navigate("/verify-email", {
                 state: {
                     login: form.email,
-                    triggerOtp: true,
                     otpPurpose: OTP_PURPOSE.SIGNUP
                 }
             });

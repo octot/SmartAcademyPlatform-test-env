@@ -1,0 +1,97 @@
+.admin-application-card {
+    width: 100%;
+    max-width: 620px;
+
+    background: #ffffff;
+
+    border: 1px solid #dcdfe4;
+
+    border-radius: 14px;
+
+    padding: 40px;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.admin-application-header {
+    margin-bottom: 32px;
+}
+
+.admin-application-header h2 {
+    font-size: 40px;
+
+    font-weight: 700;
+
+    color: #1f57d6;
+
+    margin-bottom: 14px;
+}
+
+.admin-application-header p {
+    font-size: 16px;
+
+    line-height: 1.6;
+
+    color: #5f6773;
+}
+
+.admin-application-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+.auth-field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.auth-field label {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #20242d;
+}
+
+.auth-select,
+.auth-textarea {
+    width: 100%;
+
+    border: 1px solid #d5d9e2;
+
+    border-radius: 10px;
+
+    padding: 16px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+.auth-select:focus,
+.auth-textarea:focus {
+    border-color: #1f57d6;
+}
+
+.auth-textarea {
+    resize: none;
+}
+
+.admin-login-link {
+    text-align: center;
+
+    font-size: 14px;
+
+    color: #4d5562;
+
+    margin-top: 10px;
+
+    cursor: pointer;
+}

@@ -23,7 +23,6 @@ export default function VerifyOtpForm() {
 
     const login = location.state?.login;
 
-    const triggerOtp = location.state?.triggerOtp;
 
 
     //TODO Temporary fix
@@ -50,19 +49,15 @@ export default function VerifyOtpForm() {
 
         if (!login) {
 
-            navigate("/forgot-password");
+            navigate(
+                OTP_FLOW_CONFIG[purpose]
+                    ?.missingLoginRedirect
+            );
+
         }
 
     }, [login, navigate]);
 
-    useEffect(() => {
-
-        if (triggerOtp && login) {
-
-            handleResendOtp();
-        }
-
-    }, []);
 
     const validateOtp = (value) => {
 
@@ -100,6 +95,7 @@ export default function VerifyOtpForm() {
 
             setResendLoading(true);
 
+            console.log("locationhandleResendOtp ", location)
             await resentOtp({ login, purpose });
 
         } catch (err) {
@@ -135,14 +131,8 @@ export default function VerifyOtpForm() {
                 purpose
             });
 
-            const resetToken = res?.resetToken;
-
-            navigate("/reset-password", {
-                state: {
-                    login,
-                    resetToken
-                }
-            });
+            OTP_FLOW_CONFIG[purpose]
+                ?.successNavigation(res);
 
         } catch (err) {
 
@@ -156,6 +146,51 @@ export default function VerifyOtpForm() {
         } finally {
 
             setLoading(false);
+        }
+    };
+
+    // Navigation Config
+    const OTP_FLOW_CONFIG = {
+
+        [OTP_PURPOSE.PASSWORD_RESET]: {
+
+            missingLoginRedirect:
+                "/forgot-password",
+
+            successNavigation: (response) => {
+
+                navigate("/reset-password", {
+                    state: {
+                        login,
+                        resetToken:
+                            response?.resetToken
+                    }
+                });
+            }
+        },
+
+        [OTP_PURPOSE.ADMIN_EMAIL_VERIFICATION]: {
+
+            missingLoginRedirect:
+                "/auth/admin/apply",
+
+            successNavigation: () => {
+
+                navigate(
+                    "/auth/admin/pending"
+                );
+            }
+        },
+
+        [OTP_PURPOSE.SIGNUP]: {
+
+            missingLoginRedirect:
+                "/signup",
+
+            successNavigation: () => {
+
+                navigate("/login");
+            }
         }
     };
 
