@@ -41,7 +41,7 @@ public class ProfileController {
 
     @PutMapping("/tutor")
     public ResponseEntity<TutorProfileResponse> updateTutorProfile(@Valid @RequestBody TutorUpdateRequest request) {
-        TutorProfileResponse response=profileService.updateTutorProfile(request);
+        TutorProfileResponse response = profileService.updateTutorProfile(request);
         return ResponseEntity.ok(response);
     }
 

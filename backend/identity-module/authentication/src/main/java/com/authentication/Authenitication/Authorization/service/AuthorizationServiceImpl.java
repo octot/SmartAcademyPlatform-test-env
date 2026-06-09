@@ -1,6 +1,7 @@
 package com.authentication.Authenitication.Authorization.service;
 
 
+import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
 import com.authentication.Authenitication.Authorization.Enum.Scope;
 import com.authentication.Authenitication.Authorization.Validator.BoundaryValidator;
@@ -10,7 +11,6 @@ import com.authentication.Authenitication.Authorization.repository.Authorization
 import com.authentication.Authenitication.Authorization.repository.PermissionRepository;
 import com.authentication.Authenitication.Authorization.repository.RolePermissionRepository;
 import com.authentication.Authenitication.Authorization.repository.UserRoleRepository;
-import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;

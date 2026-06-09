@@ -17,6 +17,6 @@ public interface RolePermissionRepository extends JpaRepository<RolePermission, 
             join Permission p on rp.permission.id=p.id
             where rp.role.id in :roleIds
             """)
-    List<String>findPermissionNamesByRoleId(List<Long> roleIds);
+    List<String> findPermissionNamesByRoleId(List<Long> roleIds);
 
 }

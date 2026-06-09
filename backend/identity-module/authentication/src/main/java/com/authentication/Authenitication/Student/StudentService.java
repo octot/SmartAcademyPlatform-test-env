@@ -12,10 +12,10 @@ import java.util.UUID;
 public class StudentService {
 
 
-    private final AuthorizationService authorizationService ;
+    private final AuthorizationService authorizationService;
 
 
-    public String  getStudents(UUID userId) {
+    public String getStudents(UUID userId) {
         authorizationService.authorize("student:view");
         return "List of Studetnts";
     }

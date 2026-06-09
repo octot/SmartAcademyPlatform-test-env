@@ -17,6 +17,7 @@ public class UserListResponse {
     boolean emailVerified;
     boolean accountNonBlocked;
     Set<Role> roles;
+
     public static UserListResponse from(AppUser user) {
         return new UserListResponse(
                 user.getId(),

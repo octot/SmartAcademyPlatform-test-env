@@ -4,6 +4,7 @@ package com.authentication.Authenitication.admin.entity;
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.admin.enums.AdminRequestPurpose;
 import com.authentication.Authenitication.admin.enums.ApprovalStatus;
+import com.authentication.Authenitication.admin.enums.RejectionReason;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -58,5 +59,10 @@ public class AdminRegistrationRequest {
 
     @Column(nullable = false)
     private boolean emailVerified = false;
+
+    @Enumerated(EnumType.STRING)
+    private RejectionReason rejectionReason;
+
+    private String rejectionComment;
 
 }

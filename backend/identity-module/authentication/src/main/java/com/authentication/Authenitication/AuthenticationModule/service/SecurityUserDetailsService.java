@@ -2,7 +2,6 @@ package com.authentication.Authenitication.AuthenticationModule.service;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.security.CustomUserDetails;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ public class SecurityUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
 
-    public SecurityUserDetailsService( UserService userService) {
+    public SecurityUserDetailsService(UserService userService) {
         this.userService = userService;
     }
 

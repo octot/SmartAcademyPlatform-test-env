@@ -40,7 +40,7 @@ public class TutorSetupRequest {
     private List<Syllabus> syllabusHandled;
 
     @NotEmpty
-    private  List<String>  preferredLocations;
+    private List<String> preferredLocations;
 
     private String remarks;
 

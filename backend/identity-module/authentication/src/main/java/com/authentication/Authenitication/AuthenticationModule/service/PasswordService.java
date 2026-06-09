@@ -17,6 +17,7 @@ public class PasswordService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     public void changePassword(ChangePasswordRequest request, String name) {
         AppUser user = userRepository.findByUsername(name).orElseThrow(() -> new AppException("AUTH_011"));
         if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {

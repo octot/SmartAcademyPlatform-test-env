@@ -46,7 +46,7 @@ public class SuperAdminSeeder implements CommandLineRunner {
 
             superAdmin = userRepository.save(superAdmin);
 
-            UserProfile userProfile=new UserProfile();
+            UserProfile userProfile = new UserProfile();
             userProfile.setUser(superAdmin);  //
             userProfile.setEmail(superAdminEmail);
             userProfile.setStatus(UserStatus.ACTIVE);

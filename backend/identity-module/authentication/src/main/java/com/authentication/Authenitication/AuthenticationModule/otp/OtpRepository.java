@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface OtpRepository extends JpaRepository<Otp, Long> {
@@ -39,7 +38,8 @@ public interface OtpRepository extends JpaRepository<Otp, Long> {
 
 
     @Query("""
-       SELECT COUNT(o)
+
+            SELECT COUNT(o)
        FROM Otp o
        WHERE o.target = :target
          AND o.purpose = :purpose

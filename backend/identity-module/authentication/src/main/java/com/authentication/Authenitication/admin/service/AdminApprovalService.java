@@ -3,15 +3,18 @@ package com.authentication.Authenitication.admin.service;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.admin.dto.RejectAdminRequestRequest;
 import com.authentication.Authenitication.admin.entity.AdminRegistrationRequest;
+import com.authentication.Authenitication.admin.entity.AdminRequestResponse;
 import com.authentication.Authenitication.admin.enums.ApprovalStatus;
 import com.authentication.Authenitication.admin.repository.AdminRegistrationRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,13 +29,20 @@ public class AdminApprovalService {
             adminProvisioningService;
 
 
-    //TODO DTO pagination filtering
     @Transactional(readOnly = true)
-    public List<AdminRegistrationRequest> getPendingRequests() {
+    public Page<AdminRequestResponse> getAdminRequests(
+            ApprovalStatus status,
+            String search,
+            Pageable pageable) {
+        if (status == null) {
+            return adminRequestRepository.findAll(pageable).map(this::toResponse);
+        }
         return adminRequestRepository
-                .findByStatus(
-                        ApprovalStatus.PENDING
-                );
+                .searchRequests(
+                        status,
+                        search,
+                        pageable
+                ).map(this::toResponse);
     }
 
     public void approveRequest(
@@ -99,7 +109,8 @@ public class AdminApprovalService {
 
     public void rejectRequest(
             UUID requestId,
-            AppUser reviewer
+            AppUser reviewer,
+            RejectAdminRequestRequest rejectRequest
     ) {
 
         AdminRegistrationRequest request =
@@ -121,7 +132,43 @@ public class AdminApprovalService {
 
         request.setReviewedBy(reviewer);
 
+        if (rejectRequest.reason() == null) {
+
+            throw new AppException(
+                    "ADMIN_REQ_0010"
+            );
+        }
+
+        request.setRejectionReason(
+                rejectRequest.reason()
+        );
+
+        request.setRejectionComment(
+                rejectRequest.comment()
+        );
+
+
         adminRequestRepository.save(request);
     }
 
+    private AdminRequestResponse toResponse(
+            AdminRegistrationRequest request
+    ) {
+        return new AdminRequestResponse(
+                request.getId(),
+                request.getUsername(),
+                request.getEmail(),
+                request.getPurpose(),
+                request.getDescription(),
+                request.getStatus(),
+                request.getRequestedAt(),
+                request.getReviewedAt(),
+                request.getReviewedBy() != null
+                        ? request.getReviewedBy().getUsername()
+                        : null,
+                request.isEmailVerified(),
+                request.getRejectionReason(),
+                request.getRejectionComment()
+        );
+    }
 }

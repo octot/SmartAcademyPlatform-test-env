@@ -1,0 +1,139 @@
+.pending-requests-page {
+
+    padding: 32px;
+
+    background: #f8fafc;
+
+    min-height: 100vh;
+}
+
+.page-header {
+
+    margin-bottom: 28px;
+}
+
+.page-header h1 {
+
+    font-size: 34px;
+
+    font-weight: 700;
+
+    color: #111827;
+
+    margin-bottom: 8px;
+}
+
+
+.page-header p {
+
+    font-size: 15px;
+
+    color: #6b7280;
+
+}
+
+/* Filter */
+
+.request-filters {
+
+    display: flex;
+
+    gap: 16px;
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 14px;
+
+    border: 1px solid #e5e7eb;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.request-filters input {
+
+    flex: 1;
+
+    padding: 12px 16px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+}
+
+.request-filters select {
+
+    min-width: 180px;
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    background: white;
+}
+
+.status-badge {
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.verified {
+
+    background: #dcfce7;
+
+    color: #15803d;
+}
+
+.pending {
+
+    background: #fef3c7;
+
+    color: #b45309;
+}
+
+
+.status-badge {
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.status-pending {
+
+    background: #fef3c7;
+
+    color: #b45309;
+}
+
+.status-approved {
+
+    background: #dcfce7;
+
+    color: #15803d;
+}
+
+.status-rejected {
+
+    background: #fee2e2;
+
+    color: #dc2626;
+}

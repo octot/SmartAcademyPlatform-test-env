@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface EmailChangeRepository  extends JpaRepository<EmailChangeRequest,UUID> {
+public interface EmailChangeRepository extends JpaRepository<EmailChangeRequest, UUID> {
 
     Optional<EmailChangeRequest> findByUserIdAndVerifiedFalse(UUID userId);
 

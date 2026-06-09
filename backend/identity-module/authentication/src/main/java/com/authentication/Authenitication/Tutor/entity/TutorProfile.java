@@ -49,7 +49,7 @@ public class TutorProfile {
     @ElementCollection
     private List<String> preferredLocations;
 
-    
+
     private Boolean guidelinesAccepted;
 
     private String remarks;

@@ -1,7 +1,6 @@
 package com.authentication.Authenitication.Tutor.repository;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
-import com.authentication.Authenitication.Student.entity.StudentProfile;
 import com.authentication.Authenitication.Tutor.entity.TutorProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 

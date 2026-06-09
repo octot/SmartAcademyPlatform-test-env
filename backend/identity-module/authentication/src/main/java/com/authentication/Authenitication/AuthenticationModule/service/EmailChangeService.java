@@ -5,13 +5,13 @@ import com.authentication.Authenitication.AuthenticationModule.dto.EmailChangeRe
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.entity.EmailChangeRequest;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
-import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
-import com.authentication.Authenitication.AuthenticationModule.repository.EmailChangeRepository;
-import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import com.authentication.Authenitication.AuthenticationModule.otp.OtpDeliveryService;
 import com.authentication.Authenitication.AuthenticationModule.otp.OtpPurpose;
 import com.authentication.Authenitication.AuthenticationModule.otp.OtpService;
 import com.authentication.Authenitication.AuthenticationModule.otp.VerifyOtpRequestDTO;
+import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
+import com.authentication.Authenitication.AuthenticationModule.repository.EmailChangeRepository;
+import com.authentication.Authenitication.AuthenticationModule.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,7 +83,7 @@ public class EmailChangeService {
     }
 
     @Transactional
-    public void verifyEmailChange(UUID userId, VerifyOtpRequestDTO request){
+    public void verifyEmailChange(UUID userId, VerifyOtpRequestDTO request) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException("AUTH_011"));
 

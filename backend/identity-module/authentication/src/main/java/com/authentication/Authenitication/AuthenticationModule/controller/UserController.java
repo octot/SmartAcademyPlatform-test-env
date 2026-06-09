@@ -8,7 +8,6 @@ import com.authentication.Authenitication.AuthenticationModule.security.CustomUs
 import com.authentication.Authenitication.AuthenticationModule.service.AuthService;
 import com.authentication.Authenitication.AuthenticationModule.service.EmailChangeService;
 import com.authentication.Authenitication.AuthenticationModule.service.UserService;
-import com.authentication.Authenitication.user.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

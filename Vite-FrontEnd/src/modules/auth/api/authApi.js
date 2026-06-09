@@ -87,3 +87,72 @@ export const applyForAdmin = async (payload) => {
     }
 
 };
+
+
+export const getAdminRequests = async (status,
+    page = 0,
+    size = 5) => {
+    try {
+        const response = await api.get(
+            "/auth/admin-requests",
+            {
+                params: {
+                    status:
+                        status === "ALL"
+                            ? undefined
+                            : status,
+                    page,
+                    size
+                }
+            }
+        );
+
+        return response.data;
+    }
+    catch (error) {
+        throw error.response?.data || "get Adminrequests failed";
+    }
+
+
+};
+
+export const approveAdminRequest =
+    async (requestId) => {
+
+        try {
+            const response =
+                await api.patch(
+                    `/auth/admin-requests/${requestId}/approve`
+                );
+
+            return response.data;
+        }
+        catch (error) {
+            throw error.response?.data || "Admin approval failed";
+
+        }
+    };
+export const rejectAdminRequest =
+    async (
+        requestId,
+        reason,
+        comment
+    ) => {
+
+        try {
+            const response =
+                await api.patch(
+                    `/auth/admin-requests/${requestId}/reject`,
+                    {
+                        reason,
+                        comment
+                    }
+                );
+
+            return response.data;
+        }
+        catch (error) {
+            throw error.response?.data || "Admin rejection failed";
+        }
+
+    };

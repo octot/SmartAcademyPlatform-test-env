@@ -1,6 +1,5 @@
 package com.authentication.Authenitication.AuthenticationModule.otp;
 
-import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import jakarta.persistence.*;
 import lombok.Getter;

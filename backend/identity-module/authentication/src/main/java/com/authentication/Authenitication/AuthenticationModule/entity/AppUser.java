@@ -1,13 +1,9 @@
 package com.authentication.Authenitication.AuthenticationModule.entity;
 
 import com.authentication.Authenitication.Authorization.Enum.RoleName;
-import com.authentication.Authenitication.department.entity.Department;
 import com.authentication.Authenitication.role.Role;
-import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
 import com.authentication.Authenitication.user.entity.UserProfile;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 

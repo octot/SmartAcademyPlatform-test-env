@@ -14,6 +14,6 @@ public class EmailOtpDeliveryService implements OtpDeliveryService {
 
     @Override
     public void sendOtp(String email, String otp, long expiryTime) {
-        emailService.sendEmailOtp(email, otp,expiryTime);
+        emailService.sendEmailOtp(email, otp, expiryTime);
     }
 }

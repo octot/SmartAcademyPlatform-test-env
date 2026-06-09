@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 public class AutheniticationApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AutheniticationApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AutheniticationApplication.class, args);
+    }
 
 }

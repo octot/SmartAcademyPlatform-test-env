@@ -18,6 +18,9 @@ import SetupProfilePage from "./modules/profile/pages/SetupProfilePage";
 import ProfilePage from "./modules/profile/components/ProfilePage";
 import AdminApplicationPage from "@auth/pages/AdminApplicationPage"
 import AdminPendingApprovalPage from "./modules/auth/pages/AdminPendingApprovalPage";
+// PendingAdminRequestsPage
+import PendingAdminRequestsPage from "././modules/auth/pages/PendingAdminRequestsPage"
+
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -102,6 +105,11 @@ function App() {
         <Route
           path="/auth/admin/pending"
           element={<AdminPendingApprovalPage />}
+        />
+
+        <Route
+          path="/admin/requests"
+          element={<PendingAdminRequestsPage />}
         />
 
       </Routes>

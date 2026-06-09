@@ -21,5 +21,4 @@ public class PaymentDetails {
     private String ifscCode;
 
 
-
 }

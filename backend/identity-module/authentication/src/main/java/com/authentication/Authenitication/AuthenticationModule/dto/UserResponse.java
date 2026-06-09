@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 
 @Getter
 @AllArgsConstructor
@@ -27,6 +26,7 @@ public class UserResponse {
     private String department;
 
     private UserStatus status;
+
     public static UserResponse mapToResponse(AppUser user) {
 
         UserResponse res = new UserResponse();

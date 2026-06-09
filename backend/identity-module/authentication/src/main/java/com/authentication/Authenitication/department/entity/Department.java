@@ -16,7 +16,7 @@ public class Department {
     @org.hibernate.annotations.UuidGenerator
     private UUID id;
 
-    @Column(nullable =false)
+    @Column(nullable = false)
     private String name;
 
 }

@@ -3,8 +3,8 @@ package com.authentication.Authenitication.user.entity;
 
 import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.enums.UserStatus;
-import com.authentication.Authenitication.user.enums.Gender;
 import com.authentication.Authenitication.department.entity.Department;
+import com.authentication.Authenitication.user.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name="user_profile")
+@Table(name = "user_profile")
 public class UserProfile {
 
     @Id

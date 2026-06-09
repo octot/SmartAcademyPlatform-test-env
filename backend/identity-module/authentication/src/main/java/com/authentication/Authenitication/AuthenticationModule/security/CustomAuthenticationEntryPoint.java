@@ -17,12 +17,14 @@ import java.util.Map;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
+
     //Used for timeformat to be parsed properly
     public CustomAuthenticationEntryPoint() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String errorCode = "AUTH_001";

@@ -22,9 +22,11 @@ public class ErrorProperties {
                 new ClassPathResource("error-codes.json").getInputStream();
 
         errors = mapper.readValue(inputStream,
-                new TypeReference<Map<String, ErrorDetails>>() {});
+                new TypeReference<Map<String, ErrorDetails>>() {
+                });
 
     }
+
     public ErrorDetails getError(String code) {
         return errors.get(code);
     }

@@ -12,18 +12,18 @@ import java.util.Map;
 @Component
 public class BoundaryValidatorRegistry {
 
-    private final Map<Resource,BoundaryValidator>validatorMap=new HashMap<>();
+    private final Map<Resource, BoundaryValidator> validatorMap = new HashMap<>();
 
-    public BoundaryValidatorRegistry(List<BoundaryValidator> validators){
+    public BoundaryValidatorRegistry(List<BoundaryValidator> validators) {
 
-        for(BoundaryValidator validator:validators){
-            validatorMap.put(validator.getSupportedResource(),validator);
+        for (BoundaryValidator validator : validators) {
+            validatorMap.put(validator.getSupportedResource(), validator);
         }
     }
 
-    public BoundaryValidator getValidator(Resource resource){
-        BoundaryValidator validator=validatorMap.get(resource);
-        if(validator==null){
+    public BoundaryValidator getValidator(Resource resource) {
+        BoundaryValidator validator = validatorMap.get(resource);
+        if (validator == null) {
             throw new AppException("AUTH_VALIDATOR_NOT_FOUND");
         }
         return validator;

@@ -1,6 +1,5 @@
 package com.authentication.Authenitication.AuthenticationModule.otp;
 
-import com.authentication.Authenitication.AuthenticationModule.entity.AppUser;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
 import com.authentication.Authenitication.AuthenticationModule.otp.enums.VerificationChannel;
 import org.springframework.stereotype.Service;

@@ -12,7 +12,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,7 +50,7 @@ public class Role {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<Permission> permissions=new HashSet<>();
+    private Set<Permission> permissions = new HashSet<>();
 
 
     @PrePersist

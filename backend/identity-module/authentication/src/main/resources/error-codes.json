@@ -218,5 +218,9 @@
   "ADMIN_REQ_009": {
     "message": "Your admin onboarding request was rejected",
     "status": 403
+  },
+  "ADMIN_REQ_0010": {
+    "message": "Rejection reason is required",
+    "status": 400
   }
 }

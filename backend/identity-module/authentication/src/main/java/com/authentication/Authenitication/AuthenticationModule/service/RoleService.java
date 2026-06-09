@@ -1,10 +1,10 @@
 package com.authentication.Authenitication.AuthenticationModule.service;
 
 
-import com.authentication.Authenitication.Authorization.Enum.RoleName;
-import com.authentication.Authenitication.role.Role;
 import com.authentication.Authenitication.AuthenticationModule.exception.AppException;
+import com.authentication.Authenitication.Authorization.Enum.RoleName;
 import com.authentication.Authenitication.Authorization.repository.RoleRepository;
+import com.authentication.Authenitication.role.Role;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,10 +17,10 @@ public class RoleService {
     }
 
 
-
     public Role getDefaultUserRole() {
         return roleRepository.findByName(RoleName.TUTOR).orElseThrow(() -> new AppException("ROLE_001"));
     }
+
     public Role getUserRole(RoleName role) {
         return roleRepository.findByName(role).orElseThrow(() -> new AppException("ROLE_001"));
     }
