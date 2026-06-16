@@ -20,6 +20,9 @@ import AdminApplicationPage from "@auth/pages/AdminApplicationPage"
 import AdminPendingApprovalPage from "./modules/auth/pages/AdminPendingApprovalPage";
 // PendingAdminRequestsPage
 import PendingAdminRequestsPage from "././modules/auth/pages/PendingAdminRequestsPage"
+// SuperAdminDashboardPage
+import AdminLayout from "./modules/dashboard/layouts/AdminLayout";
+import SuperAdminDashboardPage from "./modules/dashboard/roleViews/SuperAdminDashboardPage";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,7 +52,6 @@ function App() {
         {/* VerifyOtpPage */}
 
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
-
 
 
         {/* ResetPassword page */}
@@ -99,19 +101,35 @@ function App() {
         <Route path="/setup-profile" element={<SetupProfilePage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route
-          path="/auth/admin/apply"
-          element={<AdminApplicationPage />}
-        />
+          path="/admin"
+          element={
+            <ProtectedRoute
+              permissions={[
+                "ADMIN_REQUEST_VIEW_GLOBAL"
+              ]}
+            >
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <SuperAdminDashboardPage />
+            }
+          />
+          <Route
+            path="requests"
+            element={
+              <PendingAdminRequestsPage />
+            }
+          />
+
+        </Route>
         <Route
           path="/auth/admin/pending"
           element={<AdminPendingApprovalPage />}
         />
-
-        <Route
-          path="/admin/requests"
-          element={<PendingAdminRequestsPage />}
-        />
-
       </Routes>
     </BrowserRouter>
   );

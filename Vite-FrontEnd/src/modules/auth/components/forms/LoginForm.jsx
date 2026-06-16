@@ -15,16 +15,12 @@ import "../styles/LoginForm.css";
 export default function LoginForm() {
 
     const { loginAuth } = useAuth();
-
     const navigate = useNavigate();
-
     const [loading, setLoading] = useState(false);
-
     const [form, setForm] = useState({
         login: "",
         password: ""
     });
-
     const [errors, setErrors] = useState({
         login: "",
         password: "",
@@ -32,25 +28,19 @@ export default function LoginForm() {
     });
 
     const validateField = (name, value) => {
-
         let error = "";
-
         switch (name) {
 
             case "login":
-
                 if (!value.trim()) {
                     error = "Email or username is required";
                 }
-
                 break;
 
             case "password":
-
                 if (!value.trim()) {
                     error = "Password is required";
                 }
-
                 break;
 
             default:
@@ -64,9 +54,7 @@ export default function LoginForm() {
     };
 
     const handleChange = (e) => {
-
         const { name, value } = e.target;
-
         setForm(prev => ({
             ...prev,
             [name]: value
@@ -76,10 +64,8 @@ export default function LoginForm() {
     };
 
     const validateForm = () => {
-
         validateField("login", form.login);
         validateField("password", form.password);
-
         return (
             form.login.trim() &&
             form.password.trim()
@@ -93,28 +79,23 @@ export default function LoginForm() {
         const isValid = validateForm();
 
         if (!isValid) return;
-
         try {
-
             setLoading(true);
 
             setErrors(prev => ({
                 ...prev,
                 general: ""
             }));
-
             const res = await loginAuth(form);
-
             console.log("Login Success", res);
-
-            navigate("/dashboard");
-
+            if (res.activeRole === "SUPER_ADMIN") {
+                navigate("/admin");
+            } else {
+                navigate("/dashboard");
+            }
         } catch (err) {
-          
             const errorCode = err?.code;
-
             switch (errorCode) {
-
                 case "USER_NOT_FOUND":
 
                     navigate("/register", {
@@ -126,7 +107,6 @@ export default function LoginForm() {
                     break;
 
                 case "EMAIL_NOT_VERIFIED":
-
                     navigate("/verify-email", {
                         state: {
                             login: form.login,
@@ -137,15 +117,14 @@ export default function LoginForm() {
                     break;
 
                 case "INVALID_PASSWORD":
-
                     setErrors(prev => ({
                         ...prev,
                         password: "Wrong password"
                     }));
 
                     break;
-                
-                     case "ADMIN_REQ_008":
+
+                case "ADMIN_REQ_008":
 
                     setErrors(prev => ({
                         ...prev,
@@ -153,7 +132,6 @@ export default function LoginForm() {
                     }));
 
                     break;
-                
 
                 default:
 

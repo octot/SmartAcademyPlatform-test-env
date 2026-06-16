@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
     //Used for timeformat to be parsed properly

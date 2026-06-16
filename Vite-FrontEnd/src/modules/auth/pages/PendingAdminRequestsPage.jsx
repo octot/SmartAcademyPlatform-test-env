@@ -123,20 +123,13 @@ function PendingAdminRequestsPage() {
         try {
 
             setRequestToApprove(true);
-
-            console.log("FromapprovalRequest", approvalRequest)
             await approveAdminRequest(
                 approvalRequest?.id
             );
-
             await loadRequests();
-
             setRequestToApprove(null);
-
         } catch (error) {
-
             console.error(error);
-
         } finally {
 
             setRequestToApprove(false);

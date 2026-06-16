@@ -5,34 +5,20 @@ import PendingRequestRow
 import "../styles/PendingRequestsTable.css"
 function PendingRequestsTable({ requests, onView,onApprove,onReject }) {
 
-
-
     return (
-
         <table className="pending-requests-table">
 
             <thead>
-
                 <tr>
-
                     <th>User</th>
-
                     <th>Purpose</th>
-
                     <th>Requested</th>
-
                     <th>Email Verified</th>
-
                     <th>Actions</th>
-
                     <th>Status</th>
-
                 </tr>
-
             </thead>
-
             <tbody>
-
                 {
                     requests.map(request => (
 
@@ -46,9 +32,7 @@ function PendingRequestsTable({ requests, onView,onApprove,onReject }) {
                         />
                     ))
                 }
-
             </tbody>
-
         </table>
     );
 }

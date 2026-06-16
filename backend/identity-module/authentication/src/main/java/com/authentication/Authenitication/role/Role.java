@@ -44,9 +44,6 @@ public class Role {
     @JoinColumn(name = "created_by")
     private AppUser createdBy;
 
-    public Role(long l, String user) {
-    }
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))

@@ -35,8 +35,9 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    //TODO currently roles and permissions fetched from db but should be fetched from CustomerUserDetails
+    // Roles and permissions are intentionally fetched from DB
+    // to ensure the latest authorization state is returned.
+    // Can be optimized later using CustomUserDetails if needed.
     @GetMapping("/me")
     public ResponseEntity<?> aboutUser(Authentication auth) {
         // ✅ Safety check

@@ -3,6 +3,7 @@ import roleDashboardMap from "../roleViews/roleDashboardMap";
 export default function DashboardPage() {
     const { activeRole, loading } = useAuth();
 
+    console.log("activeRole", activeRole)
     if (loading) return <div>Loading...</div>;
 
     const RoleComponent = roleDashboardMap[activeRole];

@@ -55,27 +55,27 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        Optional<AppUser> existingUser =
-                userService.findByProfile_Email(
-                        request.getLogin()
-                );
-        if (existingUser.isEmpty()) {
+        Optional<AppUser> existingUser = userService.findByProfile_Email(
+                request.getLogin()
+        );
 
+        if (existingUser.isEmpty()) {
             handlePendingAdminRequest(
                     request.getLogin()
             );
-
             throw new AppException("AUTH_011");
         }
 
+//        Need to understand this
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-        CustomUserDetails user =
-                customUserDetailsService
-                        .loadUserByUsername(request.getLogin());
+
+        CustomUserDetails user = customUserDetailsService.loadUserByUsername(request.getLogin());
+
         List<String> currentRoles = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
+
         if (currentRoles.isEmpty()) {
             throw new AppException("ROLE_003");
         }

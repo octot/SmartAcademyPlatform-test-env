@@ -35,7 +35,7 @@ public class SecurityConfig {
                         // ❌ Disable CSRF (JWT is stateless)
                         AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint) // 🔥 THIS LINE
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 // ❌ Disable session creation
                 .sessionManagement(session ->

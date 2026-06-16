@@ -3,7 +3,6 @@ import Sidebar from "../modules/dashboard/components/Sidebar"
 import Topbar from "../modules/dashboard/components/Topbar"
 import { Outlet } from "react-router-dom";
 
-
 export default function DashboardLayout() {
     return (
         <div className="dashboard-container">
